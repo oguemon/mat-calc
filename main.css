@@ -75,16 +75,21 @@ input[type="text"] {
 input[type="button"] {
     width: auto;
     height: 40px;
-    margin: 5px;
+    margin: 5px 3px 0 0;
     padding: 0 10px;
-    color: #ffffff;
-    font-weight: bold;
     font-size: 100%;
     text-align: center;
+    background: #eeeeee;
     line-height: 150%;
-    background: #3355ff;
+    border: 1px solid #cccccc;
     border-radius: 3px;
     display: inline-block;
+}
+input[type="button"]#calc{
+    color: #ffffff;
+    font-weight: bold;
+    background: #3355ff;
+    border: none;
 }
 
 

@@ -16,7 +16,10 @@
         <div class="wrapper">
             <div class="container">
                 <div id="matrix_input"></div>
-                <input type="button" id="det" name="det" value="行列式を計算">
+                <input type="button" id="dim_add" value="次元＋">
+                <input type="button" id="dim_dec" value="次元ー">
+                <input type="button" id="reset" value="リセット">
+                <input type="button" id="calc" value="逆行列を計算">
                 <div id="matrix_A"></div>
                 <div id="det_answer"></div>
                 <div id="matrix_revA"></div>
@@ -27,9 +30,11 @@
         <div class="wrapper">Copyright 2018 Oguemon All right reserved.</div>
     </div>
     <script>
-    var det_btn = document.getElementById('det');
+    var btn_dimadd = document.getElementById('dim_add');
+    var btn_dimdec = document.getElementById('dim_dec');
+    var btn_reset  = document.getElementById('reset');
+    var btn_calc   = document.getElementById('calc');
     var det_ans = document.getElementById('det_answer');
-    var A = [];
     var N = 3;
 
     window.onload = function ()
@@ -37,9 +42,46 @@
         updateInputForm ();
     };
 
-    det_btn.onclick = function ()
+    /*
+     *  次元を増やすボタンを押したら
+     */
+    btn_dimadd.onclick = function ()
+    {
+        N = Math.min(N+1, 10);
+        updateInputForm ();
+        return;
+    }
+
+    /*
+     *  次元を減らすボタンを押したら
+     */
+    btn_dimdec.onclick = function ()
+    {
+        N = Math.max(N-1, 2);
+        updateInputForm ();
+        return;
+    }
+
+    /*
+     *  リセットボタンを押したら
+     */
+     btn_reset.onclick = function ()
+    {
+        var agree = window.confirm("行列の中身を全てリセットします。\nよろしいでしょうか？");
+        if (agree)
+        {
+            updateInputForm ();
+        }
+        return;
+    }
+
+    /*
+     *  計算ボタンを押したら
+     */
+    btn_calc.onclick = function ()
     {
         var start_ms = new Date().getTime();
+        var A = [];
         for (var i = 0; i < N * N; i++)
         {
             var tmp_value = document.getElementById('a-' + i).value;
