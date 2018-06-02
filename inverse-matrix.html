@@ -15,14 +15,30 @@
     <div id="main-contents">
         <div class="wrapper">
             <div class="container">
+                <h2>行列の入力</h2>
                 <div id="matrix_input"></div>
-                <input type="button" id="dim_add" value="次元＋">
-                <input type="button" id="dim_dec" value="次元ー">
-                <input type="button" id="reset" value="リセット">
-                <input type="button" id="calc" value="逆行列を計算">
-                <div id="matrix_A"></div>
+                <label>
+                <input type="checkbox" checked id="drill">
+                <span class="checkbox">計算ドリルモード<br><small>(テキトーな数字が入るから実際に解いて答えを確かめよう！)</small></span>
+                </label>
+                <div class="button-box">
+                    <input type="button" id="dim_add" value="次元＋">
+                    <input type="button" id="dim_dec" value="次元ー">
+                    <input type="button" id="reset" value="リセット">
+                    <input type="button" id="calc" value="計算スタート">
+                </div>
+                <h2>結果の表示</h2>
+                <div id="matrix_A">「逆行列を計算」ボタンを押してください！</div>
                 <div id="det_answer"></div>
                 <div id="matrix_revA"></div>
+
+                <div id="pay-attention">
+                    <div class="title">ご利用時の注意点</div>
+                    <ul class="list">
+                    <li>入力された値は、今後の精度改善などの目的のために利用および公開させていただく場合がございます。</li>
+                    <li>当サービスを利用して生じた一切の損害およびトラブル等につきまして、運営者は一切の責任を負いません。</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -30,6 +46,7 @@
         <div class="wrapper">Copyright 2018 Oguemon All right reserved.</div>
     </div>
     <script>
+    var check_drill = document.getElementById('drill');
     var btn_dimadd = document.getElementById('dim_add');
     var btn_dimdec = document.getElementById('dim_dec');
     var btn_reset  = document.getElementById('reset');
@@ -41,6 +58,14 @@
     {
         updateInputForm ();
     };
+
+    /*
+     *  次元を増やすボタンを押したら
+     */
+    check_drill.onchange = function ()
+    {
+        updateInputForm();
+    }
 
     /*
      *  次元を増やすボタンを押したら
@@ -104,10 +129,13 @@
      function updateInputForm ()
     {
         var mat_input = document.getElementById('matrix_input');
+        var drill  = check_drill.checked;
         var string = '';
         for (var i = 0; i < N * N; i++)
         {
-            string += '<input type="text" id="a-' + i + '" name="matrix[]" value="'+Math.floor(Math.random()*10)+'">';
+            //ドリルモードかどうかで数字をランダムにするか決める
+            var input_val = (drill)? Math.floor(Math.random() * 10) : 0;
+            string += '<input type="text" id="a-' + i + '" name="matrix[]" value="' + input_val + '">';
             if ((i + 1) % N == 0) string +='<br>';
         }
 
@@ -128,7 +156,7 @@
             string += Math.round(matrix[i]*1000)/1000
             string += ((i + 1) % N == 0) ? '\\\\' : ' & ';
         }
-        string += '\\end{array}\\right),$$';
+        string += '\\end{array}\\right)$$';
         // 指定したidに書き込み
         ele.innerHTML = string;
         // matjaxを更新
