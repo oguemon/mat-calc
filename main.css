@@ -7,7 +7,6 @@
     -webkit-appearance: none;
     box-sizing: border-box;
 }
-
 body {
     margin: 0;
     padding: 0;
@@ -15,30 +14,32 @@ body {
     font-size: 14px;
     font-family: Arial, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
 }
-
 small {
     font-size: 80%;
 }
-
 img {
     width: auto;
     max-width: 100%;
 }
-
 h2 {
-    margin: 10px 0;
+    margin: 0 0 10px 0;
     padding: 5px 10px;
     color: #ffffff;
     font-weight: bold;
     background: #00A5DE;
 }
-
 h3 {
     margin: 5px 0 0 0;
     font-weight: bold;
     border-bottom: 2px solid #00A5DE;
 }
-
+ul {
+    margin: 0;
+    padding: 0 0 0 15px;
+}
+li {
+    margin: 5px 0;
+}
 .wrapper {
     max-width: 640px;
     margin: 0 auto;
@@ -49,19 +50,22 @@ h3 {
  *  ヘッダー
  */
 #header {
-    height: 45px;
+    height: 60px;
     border-bottom: 1px solid #cccccc;
+    position: relative;
 }
-
 #logo {
-    width: 200px;
-    height: 45px;
-    margin: 0 auto;
-    line-height: 45px;
-    color: #00A5DE;
-    font-size: 150%;
-    font-weight: bold;
-    text-align: center;
+    width: 280px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+#twitter {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 
 /*
@@ -90,19 +94,18 @@ input[type="text"] {
     border-radius: 3px;
     display: inline-block;
 }
-
 input[type=checkbox] {
     display: none;
 }
-
 input[type=checkbox]:checked + .checkbox:before {
     opacity: 1;
 }
-  
 .checkbox {
     -webkit-transition: background-color 0.1s linear;
     transition: background-color 0.1s linear;
-    margin: 10px 0 0 0;
+    max-width: 360px;
+    width: 100%;
+    margin: 5px 0 0 0;
     padding: 5px 10px 5px 42px;
     border: 1px solid #dddddd;
     border-radius: 5px;
@@ -111,7 +114,6 @@ input[type=checkbox]:checked + .checkbox:before {
     position: relative;
     display: inline-block;
 }
-
 .checkbox:before {
     -webkit-transition: opacity 0.1s linear;
     transition: opacity 0.1s linear;
@@ -130,7 +132,18 @@ input[type=checkbox]:checked + .checkbox:before {
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
-
+select {
+    max-width: 360px;
+    width: 100%;
+    margin: 10px 0;
+    padding: 5px 10px;
+    font-size: 100%;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+}
+select#show_digit {
+    display: block;
+}
 
 input[type="button"] {
     width: auto;
@@ -155,12 +168,27 @@ input[type="button"]#calc{
 /*
  *  結果表示など
  */
+#input_attention_btn {
+    margin: 10px 0 5px 0;
+    padding: 5px 0;
+    text-align: center;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    display: block;
+}
+#input_attention {
+    font-size: 80%;
+    display: none;
+}
 #error_msg {
     margin: 10px 0;
     padding: 10px;
     color: #EB040D;
     border: 2px solid #ff9999;
     background: #fffefe;
+}
+#button_box {
+    margin: 0 0 15px 0;
 }
 #result em {
     margin: 15px;

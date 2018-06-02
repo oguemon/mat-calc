@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>行列式・逆行列計算</title>
+    <title>行列式・逆行列計算機(問題の答え合わせや試験対策に！) byおぐえもん.com</title>
     <link rel="stylesheet" href="./main.css">
 </head>
 <body>
     <div id="header">
         <div class="wrapper">
-            <div id="logo">行列式・逆行列計算</div>
+            <div id="logo"><img src="img/logo.svg"></div>
+            <div id="twitter">
+                <a href="http://twitter.com/share?url=https://oguemon.com/tools/calc-matrix/inverse-matrix.html&text=行列式・逆行列計算機(問題の答え合わせや試験対策に！) byおぐえもん.com&related=oguemon_com" target="_blenk">
+                    <img src="img/twitter-icon.svg">
+                </a>
+            </div>
         </div>
     </div>
     <div id="main-contents">
@@ -17,11 +22,38 @@
             <div class="container">
                 <h2>行列の入力</h2>
                 <div id="matrix_input"></div>
+                <!-- 注意事項 -->
+                <a id="input_attention_btn">▼入力時の注意事項を開く</a>
+                <div id="input_attention">
+                <ul>
+                    <li>行列サイズは2x2〜10x10まで対応しています！</li>
+                    <li>入出力は整数or小数で行われます。分数やルートには対応していません…</li>
+                    <li>↑少なくとも分数には今後対応したいです（・3・）</li>
+                    <li>計算結果は小数をある程度の桁で四捨五入して丸めています。表示する桁数は以下で設定可能です。</li>
+                    <li>当計算機はLU分解というものを利用して行列式と逆行列を求値しています。</li>
+                    <li>算出アルゴリズムの都合上、複雑な行列を与えた場合に本来行列式が0なのに超微小な数値を導出してしまい、存在しない逆行列を導出する場合があるのでご了承願います。</li>
+                    <li>その他の不具合がございましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</li>
+                    <li>当ページ下部にある免責事項等をお読みになった上でご利用願います。</li>
+                </ul>
+                </div>
+                <!-- 計算ドリルモード -->
                 <label>
-                <input type="checkbox" checked id="drill">
-                <span class="checkbox">計算ドリルモード<br><small>(テキトーな数字が入るから実際に解いて答えを確かめよう！)</small></span>
+                    <input type="checkbox" checked id="drill">
+                    <span class="checkbox">計算ドリルモード<br><small>(テキトーな数字が入るから実際に解いて答えを確かめよう！)</small></span>
                 </label>
-                <div class="button-box">
+                <!-- 結果の小数表示 -->
+                <select id="show_digit">
+                    <option value="0">結果を整数で表示</option>
+                    <option value="1">結果を小数第1位まで表示</option>
+                    <option value="2">結果を小数第2位まで表示</option>
+                    <option value="3" selected>結果を小数第3位まで表示</option>
+                    <option value="4">結果を小数第4位まで表示</option>
+                    <option value="5">結果を小数第5位まで表示</option>
+                    <option value="6">結果を小数第6位まで表示</option>
+                    <option value="7">結果を小数第7位まで表示</option>
+                </select>
+                <!-- いろんなボタン -->
+                <div id="button_box">
                     <input type="button" id="dim_add" value="次元＋">
                     <input type="button" id="dim_dec" value="次元ー">
                     <input type="button" id="reset" value="リセット">
@@ -48,12 +80,16 @@
         <div class="wrapper">Copyright 2018 Oguemon All right reserved.</div>
     </div>
     <script>
+    var btn_input_attention = document.getElementById('input_attention_btn');
+    var select_digit = document.getElementById('show_digit');
     var check_drill = document.getElementById('drill');
     var btn_dimadd = document.getElementById('dim_add');
     var btn_dimdec = document.getElementById('dim_dec');
     var btn_reset  = document.getElementById('reset');
     var btn_calc   = document.getElementById('calc');
+    
     var N = 3;
+    var digit = 2;
 
     window.onload = function ()
     {
@@ -61,7 +97,34 @@
     };
 
     /*
-     *  次元を増やすボタンを押したら
+     *  入力時の注意事項のリンクが開かれたら
+     */
+    btn_input_attention.onclick = function ()
+    {
+        var ele_input_attention = document.getElementById('input_attention');
+        if (ele_input_attention.style.display != 'block')
+        {
+            btn_input_attention.innerHTML = '▲入力時の注意事項を閉じる';
+            ele_input_attention.style.display = 'block';
+        }
+        else
+        {
+            btn_input_attention.innerHTML = '▼入力時の注意事項を開く';
+            ele_input_attention.style.display = 'none';
+        }
+    }
+
+    /*
+     *  表示する小数以下の桁数を決めるセレクターを変更したら
+     */
+     select_digit.onchange = function ()
+    {
+        // 桁数を設定
+        digit = select_digit.value;
+    }
+
+    /*
+     *  計算ドリルモードを変更したら
      */
     check_drill.onchange = function ()
     {
@@ -143,10 +206,12 @@
         // LU分解と行列式を求める
         var LU = makeLU(A);
         var det_A = makeDeterminant(LU);
+        // 表示する小数以下の桁数調整
+        var digit_adjuster = Math.pow(10, digit);
         // 行列式のアップ
         ele = document.getElementById('matrix_detA');
         ele.innerHTML  = '<h3>行列式</h3>'
-        ele.innerHTML += '$$|A|=' + det_A + '$$'; 
+        ele.innerHTML += '$$|A|=' + (Math.round(det_A * digit_adjuster) / digit_adjuster) + '$$'; 
         MathJax.Hub.Typeset(ele);
         
         // 逆行列を求める
@@ -196,9 +261,12 @@
     function matrix2MathJax(matrix, name)
     {
         var string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
+        var digit_adjuster = Math.pow(10, digit);
         for (var i = 0; i < matrix.length; i++)
         {
-            string += Math.round(matrix[i]*1000)/1000
+            // 桁を丸める
+            string += (Math.round(matrix[i] * digit_adjuster) / digit_adjuster);
+            // 行列の隙間か改行か
             string += ((i + 1) % N == 0) ? '\\\\' : ' & ';
         }
         string += '\\end{array}\\right)$$';
