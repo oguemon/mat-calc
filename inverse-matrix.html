@@ -26,9 +26,9 @@
     var mat_U = document.getElementById('matrix_U');
     var mat_LxU = document.getElementById('matrix_LxU');
     var matrix = [
-         0, 10, 20,
-         2,  1, 10,
-        10,  0,  5
+         4,  1,  4,
+         2,  4,  1,
+         3,  5,  3
     ];
 
     det_btn.onclick = function ()
@@ -41,7 +41,7 @@
             //本来はバリデーションを経る
             //matrix[i] = tmp_value;
         }
-        /*
+        
         var tmp_det = [];
         tmp_det.push( matrix[0] * matrix[4] * matrix[8]);
         tmp_det.push(-matrix[0] * matrix[5] * matrix[7]);
@@ -55,7 +55,7 @@
         };
         console.log(matrix);
         det_ans.innerHTML = det_number;
-        */
+        
         var LU = makeLU(matrix);
         var L = '$$L = \\left(\\begin{array}{ccc}';
         var U = '$$U = \\left(\\begin{array}{ccc}';
