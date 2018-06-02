@@ -55,7 +55,7 @@
                 <!-- 計算ドリルモード -->
                 <label>
                     <input type="checkbox" checked id="drill">
-                    <span class="checkbox">計算ドリルモード<br><small>(テキトーな数字が入るから実際に解いて答えを確かめよう！)</small></span>
+                    <span class="checkbox">計算ドリルモード<br><small>(実際に解いて答えを確かめよう！)</small></span>
                 </label>
                 <!-- 結果の小数表示 -->
                 <select id="show_digit">
@@ -206,9 +206,10 @@
                 input_error = true;
             }
         }
+        ele = document.getElementById('error_msg_box');
+        ele.innerHTML = '';
         if (input_error)
         {
-            ele = document.getElementById('error_msg_box');
             ele.innerHTML = '<div id="error_msg">正しく入力して下さい！</div>';
             return;
         }
