@@ -4,54 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <title>行列式・逆行列計算</title>
+    <link rel="stylesheet" href="./main.css">
 </head>
 <body>
-    <script>
-    for (var i = 0; i < 9; i++)
-    {
-        document.write('<input type="text" id="a-' + i + '" name="matrix[]" value="'+Math.floor(Math.random()*10)+'">');
-        if (i % 3 == 2)
-        {
-            document.write('<br>');
-        }
-    }
-    </script>
-
-    <input type="submit" id="det" name="det" value="行列式を計算">
-    <div id="det_answer"></div>
-    <div id="matrix_L"></div>
-    <div id="matrix_U"></div>
-    <div id="matrix_LxU"></div>
-    <div id="matrix_revA"></div>
-
+    <div id="header">
+        <div class="wrapper">
+            <div id="logo">行列式・逆行列計算</div>
+        </div>
+    </div>
+    <div id="main-contents">
+        <div class="wrapper">
+            <div class="container">
+                <div id="matrix_input"></div>
+                <input type="button" id="det" name="det" value="行列式を計算">
+                <div id="matrix_A"></div>
+                <div id="det_answer"></div>
+                <div id="matrix_revA"></div>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <div class="wrapper">Copyright 2018 Oguemon All right reserved.</div>
+    </div>
     <script>
     var det_btn = document.getElementById('det');
     var det_ans = document.getElementById('det_answer');
-    var matrix = [];
-    var N = 30;
+    var A = [];
+    var N = 3;
+
+    window.onload = function ()
+    {
+        updateInputForm ();
+    };
 
     det_btn.onclick = function ()
     {
         var start_ms = new Date().getTime();
         for (var i = 0; i < N * N; i++)
         {
-            matrix[i] = Math.floor(Math.random()*10)
-            //var tmp_value = document.getElementById('a-' + i).value;
+            var tmp_value = document.getElementById('a-' + i).value;
             //本来はバリデーションを経る
-            //matrix[i] = tmp_value;
+            A[i] = tmp_value;
         }
+        outputMat('matrix_A', A, 'A');
         
-        var LU = makeLU(matrix);
+        var LU = makeLU(A);
         var rev_A = makeInverceA(LU);
-        outputMat('matrix_L', LU.L, 'L');
-        outputMat('matrix_U', LU.U, 'U');
         outputMat('matrix_revA', rev_A, 'A^{-1}');
-
         det_ans.innerHTML = makeDeterminant(LU);
-
         console.log('処理時間：' + (new Date().getTime() - start_ms) + ' ms');
         return;
     }
+
+    /*
+     *  フォームの描画
+     */
+     function updateInputForm ()
+    {
+        var mat_input = document.getElementById('matrix_input');
+        var string = '';
+        for (var i = 0; i < N * N; i++)
+        {
+            string += '<input type="text" id="a-' + i + '" name="matrix[]" value="'+Math.floor(Math.random()*10)+'">';
+            if ((i + 1) % N == 0) string +='<br>';
+        }
+
+        mat_input.innerHTML = string;
+    }
+
     /*
      *  行列をmathjaxで出力
      */
@@ -63,7 +83,7 @@
         var string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
         for (var i = 0; i < matrix.length; i++)
         {
-            string += matrix[i]
+            string += Math.round(matrix[i]*1000)/1000
             string += ((i + 1) % N == 0) ? '\\\\' : ' & ';
         }
         string += '\\end{array}\\right),$$';
@@ -287,9 +307,6 @@
 
         return AB;
     }
-    </script>
-    <script src='./fraction.js' async></script>
-    <script>
     </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 </body>
