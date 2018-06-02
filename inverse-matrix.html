@@ -15,98 +15,111 @@
             document.write('<br>');
         }
     }
-    document.write('<input type="submit" id="det" name="det" value="行列式を計算">');
-    document.write('<div id="det_answer"></div>');
-    document.write('<div id="matrix_L"></div>');
-    document.write('<div id="matrix_U"></div>');
-    document.write('<div id="matrix_LxU"></div>');
-    document.write('<div id="matrix_revA"></div>');
+    </script>
+
+    <input type="submit" id="det" name="det" value="行列式を計算">
+    <div id="det_answer"></div>
+    <div id="matrix_L"></div>
+    <div id="matrix_U"></div>
+    <div id="matrix_LxU"></div>
+    <div id="matrix_revA"></div>
+
+    <script>
     var det_btn = document.getElementById('det');
     var det_ans = document.getElementById('det_answer');
-    var mat_L = document.getElementById('matrix_L');
-    var mat_U = document.getElementById('matrix_U');
-    var mat_LxU = document.getElementById('matrix_LxU');
-    var mat_revA = document.getElementById('matrix_revA');
     var matrix = [
-         1,  1, -1,
-        -2,  0,  1,
-         0,  2,  1
+         1,  2,  1,
+         2,  5,  6,
+         1,  3,  4
     ];
+    var N = 3;
 
     det_btn.onclick = function ()
     {
-        N = Math.pow(matrix.length, 0.5); // 次元数
-        mat_length = matrix.length; // 要素数
-        for (var i = 0; i < mat_length; i++)
+        for (var i = 0; i < matrix.length; i++)
         {
             //var tmp_value = document.getElementById('a-' + i).value;
             //本来はバリデーションを経る
             //matrix[i] = tmp_value;
         }
         
-        var tmp_det = [];
-        tmp_det.push( matrix[0] * matrix[4] * matrix[8]);
-        tmp_det.push(-matrix[0] * matrix[5] * matrix[7]);
-        tmp_det.push(-matrix[1] * matrix[3] * matrix[8]);
-        tmp_det.push( matrix[1] * matrix[5] * matrix[6]);
-        tmp_det.push( matrix[2] * matrix[3] * matrix[7]);
-        tmp_det.push(-matrix[2] * matrix[4] * matrix[6]); 
-        var det_number = 0;
-        for (var j = 0; j < tmp_det.length; j++) {
-            det_number += tmp_det[j];
-        };
-        det_ans.innerHTML = det_number;
-        
         var LU = makeLU(matrix);
         var rev_A = makeInverceA(LU);
-        var L = '$$L = \\left(\\begin{array}{ccc}';
-        var U = '$$U = \\left(\\begin{array}{ccc}';
-        var LxU = '$$LU = \\left(\\begin{array}{ccc}';
-        var revA = '$$A^{-1} = \\left(\\begin{array}{ccc}';
-        for (var i = 0; i < mat_length; i++)
-        {
-            L += LU.L[i];
-            U += LU.U[i];
-            LxU += LU.LxU[i];
-            revA += rev_A[i];
-            if ((i + 1) % N == 0)
-            {
-                L += '\\\\';
-                U += '\\\\';
-                LxU += '\\\\';
-                revA += '\\\\';
-            }
-            else
-            {
-                L += ' & ';
-                U += ' & ';
-                LxU += ' & ';
-                revA += ' & ';
-            }
-        }
-        L += '\\end{array}\\right),$$';
-        U += '\\end{array}\\right),$$';
-        LxU += '\\end{array}\\right),$$';
-        revA += '\\end{array}\\right),$$';
-        mat_L.innerHTML = L;
-        mat_U.innerHTML = U;
-        mat_LxU.innerHTML = LxU;
-        mat_revA.innerHTML = revA;
-        MathJax.Hub.Typeset(mat_L);
-        MathJax.Hub.Typeset(mat_U);
-        MathJax.Hub.Typeset(mat_LxU);
-        MathJax.Hub.Typeset(mat_revA);
-        console.log(LU.pivot);
+        outputMat('matrix_L', LU.L, 'L');
+        outputMat('matrix_U', LU.U, 'U');
+        outputMat('matrix_revA', rev_A, 'A^{-1}');
+
+        det_ans.innerHTML = makeDeterminant(LU);
+
         return;
     }
-    // 吐き出し計算をする
+    /*
+     *  行列をmathjaxで出力
+     */
+    function outputMat(id, matrix, name)
+    {
+        // 指定したidのエレメントを取得
+        var ele = document.getElementById(id);
+        // 出力文字列を更新
+        var string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
+        for (var i = 0; i < matrix.length; i++)
+        {
+            string += matrix[i]
+            string += ((i + 1) % N == 0) ? '\\\\' : ' & ';
+        }
+        string += '\\end{array}\\right),$$';
+        // 指定したidに書き込み
+        ele.innerHTML = string;
+        // matjaxを更新
+        MathJax.Hub.Typeset(ele);
+        return;
+    }
+
+    /*
+     *  行列式を求める
+     */
+    function makeDeterminant(LU)
+    {
+        var L = LU.L;
+        var U = LU.U;
+
+        var det = 1;
+
+        // Uの対角成分の積を求める
+        for (var i = 0; i < N; i++)
+        {
+            det *= LU.U[i + i * N];
+        }
+
+        return det;
+    }
+
+    /*
+     *  掃き出し計算をして逆行列を求める
+     *  (三角行列なので効率的)
+     */
     function makeInverceA(LU)
     {
         var L = LU.L;
         var U = LU.U;
-        var N = Math.pow(L.length, 0.5)
+
+        // 逆行列が定義されるかどうかをチェック
+        if (makeDeterminant(LU) == 0)
+        {
+            return false;
+        }
+
+        /*
+         *  逆行列の卵を単位行列の形に初期化
+         *  (単位行列にすることで効率化する)
+         */
         var B = (new Array(L.length)).fill(0);
         var C = (new Array(L.length)).fill(0);
+        for (var i = 0; i < N; i++)
+        {
+            B[i + i * N] = 1;
+            C[i + i * N] = 1;
+        }
 
         /*
          *  LC = EとなるC(即ちLの逆行列)を求める
@@ -116,11 +129,6 @@
         {
             for (var i = j; i < N; i++)
             {
-                // 右辺(単位行列)の対角成分に対応
-                if (i == j)
-                {
-                    C[j + i * N] = 1;
-                }
                 // Uにとって対角行列より右側を既出の値で計算
                 for (var k = j; k < i; k++)
                 {
@@ -137,12 +145,6 @@
         {
             for (var i = j; 0 <= i; i--)
             {
-                // 右辺(単位行列)の対角成分に対応
-                if (i == j)
-                {
-                    B[j + i * N] = 1;
-                }
-
                 // Uにとって対角行列より右側を既出の値で計算
                 for (var k = j; i < k; k--)
                 {
@@ -171,7 +173,6 @@
     // LU分解を行う
     function makeLU (A)
     {
-        var N = Math.pow(A.length, 0.5)
         // 行の入れ替え状況を格納する配列
         var pivot = [];
         for (var i = 0; i < N; i++) {
@@ -269,14 +270,14 @@
         {
             return false;
         }
-        
-        var N = Math.pow(A.length, 0.5);
+
         var AB = [];
+        var sum = 0;
         for (var i = 0; i < N; i++)
         {
             for (var j = 0; j < N; j++)
             {
-                var sum = 0;
+                sum = 0;
                 for (var k = 0; k < N; k++)
                 {
                     sum += A[k + i * N] * B[j + k * N];
