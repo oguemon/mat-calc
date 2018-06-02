@@ -20,15 +20,17 @@
     document.write('<div id="matrix_L"></div>');
     document.write('<div id="matrix_U"></div>');
     document.write('<div id="matrix_LxU"></div>');
+    document.write('<div id="matrix_revA"></div>');
     var det_btn = document.getElementById('det');
     var det_ans = document.getElementById('det_answer');
     var mat_L = document.getElementById('matrix_L');
     var mat_U = document.getElementById('matrix_U');
     var mat_LxU = document.getElementById('matrix_LxU');
+    var mat_revA = document.getElementById('matrix_revA');
     var matrix = [
-         4,  1,  4,
-         2,  4,  1,
-         3,  5,  3
+         1,  1, -1,
+        -2,  0,  1,
+         0,  2,  1
     ];
 
     det_btn.onclick = function ()
@@ -53,43 +55,119 @@
         for (var j = 0; j < tmp_det.length; j++) {
             det_number += tmp_det[j];
         };
-        console.log(matrix);
         det_ans.innerHTML = det_number;
         
         var LU = makeLU(matrix);
+        var rev_A = makeInverceA(LU);
         var L = '$$L = \\left(\\begin{array}{ccc}';
         var U = '$$U = \\left(\\begin{array}{ccc}';
         var LxU = '$$LU = \\left(\\begin{array}{ccc}';
+        var revA = '$$A^{-1} = \\left(\\begin{array}{ccc}';
         for (var i = 0; i < mat_length; i++)
         {
             L += LU.L[i];
             U += LU.U[i];
             LxU += LU.LxU[i];
+            revA += rev_A[i];
             if ((i + 1) % N == 0)
             {
                 L += '\\\\';
                 U += '\\\\';
                 LxU += '\\\\';
+                revA += '\\\\';
             }
             else
             {
                 L += ' & ';
                 U += ' & ';
                 LxU += ' & ';
+                revA += ' & ';
             }
         }
         L += '\\end{array}\\right),$$';
         U += '\\end{array}\\right),$$';
         LxU += '\\end{array}\\right),$$';
+        revA += '\\end{array}\\right),$$';
         mat_L.innerHTML = L;
         mat_U.innerHTML = U;
         mat_LxU.innerHTML = LxU;
+        mat_revA.innerHTML = revA;
         MathJax.Hub.Typeset(mat_L);
         MathJax.Hub.Typeset(mat_U);
         MathJax.Hub.Typeset(mat_LxU);
+        MathJax.Hub.Typeset(mat_revA);
         console.log(LU.pivot);
         return;
     }
+    // 吐き出し計算をする
+    function makeInverceA(LU)
+    {
+        var L = LU.L;
+        var U = LU.U;
+        var N = Math.pow(L.length, 0.5)
+        var B = (new Array(L.length)).fill(0);
+        var C = (new Array(L.length)).fill(0);
+
+        /*
+         *  LC = EとなるC(即ちLの逆行列)を求める
+         */
+        // 左上から、行→列の順に走査
+        for (var j = 0; j < N; j++)
+        {
+            for (var i = j; i < N; i++)
+            {
+                // 右辺(単位行列)の対角成分に対応
+                if (i == j)
+                {
+                    C[j + i * N] = 1;
+                }
+                // Uにとって対角行列より右側を既出の値で計算
+                for (var k = j; k < i; k++)
+                {
+                    C[j + i * N] -= L[k + i * N] * C[j + k * N];
+                }
+            }
+        }
+
+        /*
+         *  UB = EとなるB(即ちUの逆行列)を求める
+         */
+        // 右下から、行→列の順に走査
+        for (var j = N - 1; 0 <= j; j--)
+        {
+            for (var i = j; 0 <= i; i--)
+            {
+                // 右辺(単位行列)の対角成分に対応
+                if (i == j)
+                {
+                    B[j + i * N] = 1;
+                }
+
+                // Uにとって対角行列より右側を既出の値で計算
+                for (var k = j; i < k; k--)
+                {
+                    B[j + i * N] -= U[k + i * N] * B[j + k * N];
+                }
+                // 最後に対角成分で割る
+                B[j + i * N] /= U[i + i * N];
+            }
+        }
+
+        /*
+         * A逆行列をU^(-1)L^(-1)から求める
+         */
+        var rev_UL = multSquareMatrix (B, C);
+        var rev_A = [];
+        for (var j = 0; j < LU.pivot.length; j++)
+        {
+            for (var i = 0; i < N; i++)
+            {
+                rev_A[LU.pivot[j] + i * N] = rev_UL[j + i * N];
+            }
+        }
+        return rev_A;
+    }
+
     // LU分解を行う
     function makeLU (A)
     {
