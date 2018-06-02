@@ -27,17 +27,15 @@
     <script>
     var det_btn = document.getElementById('det');
     var det_ans = document.getElementById('det_answer');
-    var matrix = [
-         1,  2,  1,
-         2,  5,  6,
-         1,  3,  4
-    ];
-    var N = 3;
+    var matrix = [];
+    var N = 30;
 
     det_btn.onclick = function ()
     {
-        for (var i = 0; i < matrix.length; i++)
+        var start_ms = new Date().getTime();
+        for (var i = 0; i < N * N; i++)
         {
+            matrix[i] = Math.floor(Math.random()*10)
             //var tmp_value = document.getElementById('a-' + i).value;
             //本来はバリデーションを経る
             //matrix[i] = tmp_value;
@@ -51,6 +49,7 @@
 
         det_ans.innerHTML = makeDeterminant(LU);
 
+        console.log('処理時間：' + (new Date().getTime() - start_ms) + ' ms');
         return;
     }
     /*
@@ -288,6 +287,9 @@
 
         return AB;
     }
+    </script>
+    <script src='./fraction.js' async></script>
+    <script>
     </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 </body>
