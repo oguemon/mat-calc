@@ -1,9 +1,129 @@
-<!Doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <title>行列式・逆行列計算</title>
 </head>
 <body>
-    
+    <script>
+    for (var i = 0; i < 9; i++)
+    {
+        document.write('<input type="text" id="a-' + i + '" name="matrix[]" value="'+Math.floor(Math.random()*10)+'">');
+        if (i % 3 == 2)
+        {
+            document.write('<br>');
+        }
+    }
+    document.write('<input type="submit" id="det" name="det" value="行列式を計算">');
+    document.write('<div id="det_answer"></div>');
+    document.write('<div id="matrix_L"></div>');
+    document.write('<div id="matrix_U"></div>');
+    var det_btn = document.getElementById('det');
+    var det_ans = document.getElementById('det_answer');
+    var mat_L = document.getElementById('matrix_L');
+    var mat_U = document.getElementById('matrix_U');
+    var matrix = [3,-2,-1, -6,2,3, -3,-2,6];
+
+    det_btn.onclick = function ()
+    {
+        N = 4; // 次元数
+        mat_length = N * N; // 要素数
+        for (var i = 0; i < mat_length; i++)
+        {
+            //var tmp_value = document.getElementById('a-' + i).value;
+            //本来はバリデーションを経る
+            //matrix[i] = tmp_value;
+        }
+        /*
+        var tmp_det = [];
+        tmp_det.push( matrix[0] * matrix[4] * matrix[8]);
+        tmp_det.push(-matrix[0] * matrix[5] * matrix[7]);
+        tmp_det.push(-matrix[1] * matrix[3] * matrix[8]);
+        tmp_det.push( matrix[1] * matrix[5] * matrix[6]);
+        tmp_det.push( matrix[2] * matrix[3] * matrix[7]);
+        tmp_det.push(-matrix[2] * matrix[4] * matrix[6]); 
+        var det_number = 0;
+        for (var j = 0; j < tmp_det.length; j++) {
+            det_number += tmp_det[j];
+        };
+        console.log(matrix);
+        det_ans.innerHTML = det_number;
+        */
+        var LU = makeLU(matrix, N);
+        var L = '$$L = \\left(\\begin{array}{ccc}';
+        var U = '$$U = \\left(\\begin{array}{ccc}';
+        for (var i = 0; i < mat_length; i++)
+        {
+            L += LU.L[i];
+            U += LU.U[i];
+            if ((i + 1) % N == 0)
+            {
+                L += '\\\\';
+                U += '\\\\';
+            }
+            else
+            {
+                L += ' & ';
+                U += ' & ';
+            }
+        }
+        L += '\\end{array}\\right),$$';
+        U += '\\end{array}\\right),$$';
+        mat_L.innerHTML = L;
+        mat_U.innerHTML = U;
+        MathJax.Hub.Typeset(mat_L);
+        MathJax.Hub.Typeset(mat_U);
+
+        return;
+    }
+    // LU分解を行う
+    function makeLU (A, N)
+    {
+        // i行目について扱う
+        for (var i = 0; i < N - 1; i++)
+        {
+            // i行目のの割り算(U作り)
+            for (var j = i + 1; j < N; j++)
+            {
+                A[i + j * N] /= A[i + i * N];
+            }
+            // j行目とi列目で行列を作って余因子から引く
+            for (var n = i + 1; n < N; n++)
+            {
+                for (var m = i + 1; m < N; m++)
+                {
+                    A[m + n * N] -= A[m + i * N] * A[i + n * N];
+                }
+            }
+        }
+
+        // LとUを出す
+        var L = A.slice();
+        var U = A.slice();
+        for (var i = 0; i < N; i++)
+        {
+            for (var j = 0; j < N; j++)
+            {
+                if (i < j)
+                {
+                    L[j + i * N] = 0;
+                }
+                else if (i > j)
+                {
+                    U[j + i * N] = 0;
+                }
+                else
+                {
+                    L[j + i * N] = 1;
+                }
+            }
+        }
+            
+
+        return {'L': L, 'U': U};
+    }
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 </body>
 </html>
