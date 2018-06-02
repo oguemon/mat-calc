@@ -56,13 +56,14 @@
                 <a id="input_attention_btn">▼入力時の注意事項を開く</a>
                 <div id="input_attention">
                 <ul>
-                    <li>行列サイズは2x2〜10x10まで対応しています！</li>
-                    <li>入出力は整数or小数で行われます。分数やルートには対応していません…</li>
+                    <li>行列サイズは<strong>2×2〜10×10</strong>に対応しています！</li>
+                    <li>成分毎の入力窓をスムーズに行き来できるキーがPC/SP共に用意されてるので探してみてね（PCだとTabキー）</li>
+                    <li>入出力は<strong>整数or小数</strong>で行われます。分数やルートには対応していません…</li>
                     <li>↑少なくとも分数には今後対応したいです（・3・）</li>
-                    <li>計算結果は小数をある程度の桁で四捨五入して丸めています。表示する桁数は以下で設定可能です。</li>
+                    <li>計算結果は<strong>小数をある程度の桁で四捨五入して丸めています</strong>。表示する桁数は以下で設定可能です。</li>
                     <li>当計算機はLU分解というものを利用して行列式と逆行列を求値しています。</li>
-                    <li>算出アルゴリズムの都合上、複雑な行列を与えた場合に本来行列式が0なのに超微小な数値を導出してしまい、存在しない逆行列を導出する場合があるのでご了承願います。</li>
-                    <li>その他の不具合がございましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</li>
+                    <li>算出アルゴリズムの都合上、複雑な行列を与えた場合に本来行列式が0なのに超微小な数値を導出してしまい、存在しない逆行列を導出する場合があるのでご了承願います（これは小数計算の限界に近い話で、基本的に正しい答えを返します）。</li>
+                    <li><strong>その他の不具合やご要望などがございましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</strong></li>
                     <li>当ページ下部にある免責事項等をお読みになった上でご利用願います。</li>
                 </ul>
                 </div>
@@ -92,14 +93,16 @@
                 <div id="error_msg_box"></div>
 
                 <!-- Google Adsense広告（Webサービス入力下部） -->
-                <ins class="adsbygoogle"
-                style="display:block"
-                data-ad-client="ca-pub-6941251424797111"
-                data-ad-slot="8874373153"
-                data-ad-format="auto"></ins>
-                <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                <div class="google_ad">
+                    <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-6941251424797111"
+                    data-ad-slot="8874373153"
+                    data-ad-format="auto"></ins>
+                    <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
 
                 <!-- 結果表示 -->
                 <h2>結果の表示</h2>
@@ -110,13 +113,15 @@
                 </div>
 
                 <!-- Google Adsense広告（サイドバー（PC）） -->
-                <ins class="adsbygoogle"
-                style="display:inline-block;width:300px;height:600px"
-                data-ad-client="ca-pub-6941251424797111"
-                data-ad-slot="4920179380"></ins>
-                <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                <div class="google_ad">
+                    <ins class="adsbygoogle"
+                    style="display:inline-block;width:300px;height:600px"
+                    data-ad-client="ca-pub-6941251424797111"
+                    data-ad-slot="4920179380"></ins>
+                    <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
 
                 <!-- 免責事項 -->
                 <div id="pay-attention">
