@@ -27,11 +27,13 @@
                     <input type="button" id="reset" value="リセット">
                     <input type="button" id="calc" value="計算スタート">
                 </div>
+                <div id="error_msg_box"></div>
                 <h2>結果の表示</h2>
-                <div id="matrix_A">「逆行列を計算」ボタンを押してください！</div>
-                <div id="det_answer"></div>
-                <div id="matrix_revA"></div>
-
+                <div id="result">
+                    <div id="matrix_A">「逆行列を計算」ボタンを押してください！</div>
+                    <div id="matrix_detA"></div>
+                    <div id="matrix_revA"></div>
+                </div>
                 <div id="pay-attention">
                     <div class="title">ご利用時の注意点</div>
                     <ul class="list">
@@ -51,7 +53,6 @@
     var btn_dimdec = document.getElementById('dim_dec');
     var btn_reset  = document.getElementById('reset');
     var btn_calc   = document.getElementById('calc');
-    var det_ans = document.getElementById('det_answer');
     var N = 3;
 
     window.onload = function ()
@@ -107,20 +108,67 @@
     {
         var start_ms = new Date().getTime();
         var A = [];
+        var ele; // id要素を格納
+        
+        // 行列の入力
+        var input_error = false;
         for (var i = 0; i < N * N; i++)
         {
-            var tmp_value = document.getElementById('a-' + i).value;
-            //本来はバリデーションを経る
-            A[i] = tmp_value;
+            var ele = document.getElementById('a-' + i);
+            var tmp_value = ele.value;
+            if (isNumber(tmp_value))
+            {
+                A[i] = tmp_value;
+                ele.style.border = '1px solid #dddddd';
+            }
+            else
+            {
+                ele.style.border = '2px solid #EB040D';
+                input_error = true;
+            }
         }
-        outputMat('matrix_A', A, 'A');
+        if (input_error)
+        {
+            ele = document.getElementById('error_msg_box');
+            ele.innerHTML = '<div id="error_msg">正しく入力して下さい！</div>';
+            return;
+        }
+
+        // 入力した行列のアップ
+        ele = document.getElementById('matrix_A');
+        ele.innerHTML  = '<h3>入力した行列</h3>'
+        ele.innerHTML += matrix2MathJax(A, 'A'); 
+        MathJax.Hub.Typeset(ele);
         
+        // LU分解と行列式を求める
         var LU = makeLU(A);
+        var det_A = makeDeterminant(LU);
+        // 行列式のアップ
+        ele = document.getElementById('matrix_detA');
+        ele.innerHTML  = '<h3>行列式</h3>'
+        ele.innerHTML += '$$|A|=' + det_A + '$$'; 
+        MathJax.Hub.Typeset(ele);
+        
+        // 逆行列を求める
         var rev_A = makeInverceA(LU);
-        outputMat('matrix_revA', rev_A, 'A^{-1}');
-        det_ans.innerHTML = makeDeterminant(LU);
+        // 求めた逆行列のアップ
+        ele = document.getElementById('matrix_revA');
+        ele.innerHTML  = '<h3>逆行列</h3>'
+        ele.innerHTML += (det_A == 0)? '<em>逆行列はありません！</em>' : matrix2MathJax(rev_A, 'A^{-1}');
+        MathJax.Hub.Typeset(ele);
+        
         console.log('処理時間：' + (new Date().getTime() - start_ms) + ' ms');
         return;
+    }
+
+    /*
+     *  数字かどうかのチェック
+     */
+    function isNumber(num_value){
+        // チェック条件パターン
+        var pattern = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
+        // 数値チェック
+        return pattern.test(num_value);
     }
 
     /*
@@ -145,11 +193,8 @@
     /*
      *  行列をmathjaxで出力
      */
-    function outputMat(id, matrix, name)
+    function matrix2MathJax(matrix, name)
     {
-        // 指定したidのエレメントを取得
-        var ele = document.getElementById(id);
-        // 出力文字列を更新
         var string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
         for (var i = 0; i < matrix.length; i++)
         {
@@ -157,11 +202,8 @@
             string += ((i + 1) % N == 0) ? '\\\\' : ' & ';
         }
         string += '\\end{array}\\right)$$';
-        // 指定したidに書き込み
-        ele.innerHTML = string;
-        // matjaxを更新
-        MathJax.Hub.Typeset(ele);
-        return;
+
+        return string;
     }
 
     /*

@@ -26,10 +26,17 @@ img {
 }
 
 h2 {
+    margin: 10px 0;
     padding: 5px 10px;
     color: #ffffff;
     font-weight: bold;
     background: #00A5DE;
+}
+
+h3 {
+    margin: 5px 0 0 0;
+    font-weight: bold;
+    border-bottom: 2px solid #00A5DE;
 }
 
 .wrapper {
@@ -143,6 +150,25 @@ input[type="button"]#calc{
     font-weight: bold;
     background: #00A5DE;
     border: none;
+}
+
+/*
+ *  結果表示など
+ */
+#error_msg {
+    margin: 10px 0;
+    padding: 10px;
+    color: #EB040D;
+    border: 2px solid #ff9999;
+    background: #fffefe;
+}
+#result em {
+    margin: 15px;
+    color: #EB040D;
+    font-size: 120%;
+    font-weight: bold;
+    font-style: normal;
+    display: inline-block;
 }
 
 /*
