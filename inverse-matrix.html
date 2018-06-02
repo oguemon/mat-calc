@@ -19,21 +19,22 @@
     document.write('<div id="det_answer"></div>');
     document.write('<div id="matrix_L"></div>');
     document.write('<div id="matrix_U"></div>');
+    document.write('<div id="matrix_LxU"></div>');
     var det_btn = document.getElementById('det');
     var det_ans = document.getElementById('det_answer');
     var mat_L = document.getElementById('matrix_L');
     var mat_U = document.getElementById('matrix_U');
+    var mat_LxU = document.getElementById('matrix_LxU');
     var matrix = [
-         2,  4,  1, -3,
-        -1, -2,  2,  4,
-         4,  2, -3,  5,
-         5, -4, -3,  1
+         0, 10, 20,
+         2,  1, 10,
+        10,  0,  5
     ];
 
     det_btn.onclick = function ()
     {
-        N = 4; // 次元数
-        mat_length = N * N; // 要素数
+        N = Math.pow(matrix.length, 0.5); // 次元数
+        mat_length = matrix.length; // 要素数
         for (var i = 0; i < mat_length; i++)
         {
             //var tmp_value = document.getElementById('a-' + i).value;
@@ -55,36 +56,44 @@
         console.log(matrix);
         det_ans.innerHTML = det_number;
         */
-        var LU = makeLU(matrix, N);
+        var LU = makeLU(matrix);
         var L = '$$L = \\left(\\begin{array}{ccc}';
         var U = '$$U = \\left(\\begin{array}{ccc}';
+        var LxU = '$$LU = \\left(\\begin{array}{ccc}';
         for (var i = 0; i < mat_length; i++)
         {
             L += LU.L[i];
             U += LU.U[i];
+            LxU += LU.LxU[i];
             if ((i + 1) % N == 0)
             {
                 L += '\\\\';
                 U += '\\\\';
+                LxU += '\\\\';
             }
             else
             {
                 L += ' & ';
                 U += ' & ';
+                LxU += ' & ';
             }
         }
         L += '\\end{array}\\right),$$';
         U += '\\end{array}\\right),$$';
+        LxU += '\\end{array}\\right),$$';
         mat_L.innerHTML = L;
         mat_U.innerHTML = U;
+        mat_LxU.innerHTML = LxU;
         MathJax.Hub.Typeset(mat_L);
         MathJax.Hub.Typeset(mat_U);
+        MathJax.Hub.Typeset(mat_LxU);
         console.log(LU.pivot);
         return;
     }
     // LU分解を行う
-    function makeLU (A, N)
+    function makeLU (A)
     {
+        var N = Math.pow(A.length, 0.5)
         // 行の入れ替え状況を格納する配列
         var pivot = [];
         for (var i = 0; i < N; i++) {
@@ -115,7 +124,7 @@
             // 最大が0じゃなくて対角成分以上の行があった→行を入れ替える
             if (i != max.line)
             {
-                for (var j = i; j < N; j++)
+                for (var j = 0; j < N; j++)
                 {
                     // 行の入れ替え
                     var tmp = A[j + i * N];
@@ -168,9 +177,37 @@
                 }
             }
         }
-            
 
-        return {'L': L, 'U': U, 'pivot': pivot};
+        return {'L': L, 'U': U, 'LxU': multSquareMatrix(L, U), 'pivot': pivot};
+    }
+
+    /*
+     *  正方行列のかけ算をする（定義できないときはfalse）
+     */
+    function multSquareMatrix (A, B)
+    {
+        // AとBの要素数がマッチしない or 要素数が平方数じゃない
+        if (A.length != B.length || !Number.isInteger(Math.pow(A.length, 0.5)))
+        {
+            return false;
+        }
+        
+        var N = Math.pow(A.length, 0.5);
+        var AB = [];
+        for (var i = 0; i < N; i++)
+        {
+            for (var j = 0; j < N; j++)
+            {
+                var sum = 0;
+                for (var k = 0; k < N; k++)
+                {
+                    sum += A[k + i * N] * B[j + k * N];
+                }
+                AB[j + i * N] = sum;
+            }
+        }
+
+        return AB;
     }
     </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
