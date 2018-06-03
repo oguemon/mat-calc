@@ -97,9 +97,6 @@
                 </div>
                 <div id="error_msg_box"></div>
 
-                <!-- 結果表示 -->
-                <h2>結果の表示</h2>
-
                 <!-- Google Adsense広告（Webサービス入力下部） -->
                 <div class="google_ad">
                     <ins class="adsbygoogle"
@@ -112,6 +109,8 @@
                     </script>
                 </div>
 
+                <!-- 結果表示 -->
+                <h2 id="headline_result">結果の表示</h2>
                 <div id="result">
                     <div id="matrix_A">「逆行列を計算」ボタンを押してください！</div>
                     <div id="matrix_detA"></div>
@@ -143,6 +142,7 @@
     <div id="footer">
         <div class="wrapper">Copyright 2018 Oguemon All right reserved.</div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script>
     var btn_input_attention = document.getElementById('input_attention_btn');
     var select_digit = document.getElementById('show_digit');
@@ -286,7 +286,12 @@
         ele.innerHTML  = '<h3>逆行列</h3>'
         ele.innerHTML += (det_A == 0)? '<em>逆行列はありません！</em>' : matrix2MathJax(rev_A, 'A^{-1}');
         MathJax.Hub.Typeset(ele);
-        
+
+        // 移動先を数値で取得
+        var position = $('#headline_result').offset().top;
+        // スムーススクロール
+        $('body,html').animate({scrollTop:position}, 400, 'swing');
+
         console.log('処理時間：' + (new Date().getTime() - start_ms) + ' ms');
         return;
     }
