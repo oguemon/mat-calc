@@ -345,13 +345,17 @@
     {
         var L = LU.L;
         var U = LU.U;
-
         var det = 1;
 
         // Uの対角成分の積を求める
         for (var i = 0; i < N; i++)
         {
             det *= LU.U[i + i * N];
+        }
+        // LU分解前における行の入れ替え回数が奇数ならマイナス
+        if (LU.pivot_count % 2 == 1)
+        {
+            det *= -1;
         }
 
         return det;
@@ -441,6 +445,8 @@
         for (var i = 0; i < N; i++) {
             pivot[i] = i;
         }
+        // 入れ替え回数をカウントする配列
+        var pivot_count = 0;
 
         // i行目について扱う
         for (var i = 0; i < N - 1; i++)
@@ -477,6 +483,8 @@
                 tmp = pivot[i]
                 pivot[i] = pivot[max.line];
                 pivot[max.line] = tmp;
+                // ピポットカウンターのインクリメント
+                pivot_count++;
             }
 
             /*
@@ -520,7 +528,7 @@
             }
         }
 
-        return {'L': L, 'U': U, 'LxU': multSquareMatrix(L, U), 'pivot': pivot};
+        return {'L': L, 'U': U, 'LxU': multSquareMatrix(L, U), 'pivot': pivot, 'pivot_count': pivot_count};
     }
 
     /*
