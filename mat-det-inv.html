@@ -287,8 +287,8 @@
         ele.innerHTML += (det_A == 0)? '<em>逆行列はありません！</em>' : matrix2MathJax(rev_A, 'A^{-1}');
         MathJax.Hub.Typeset(ele);
 
-        // 移動先を数値で取得
-        var position = $('#headline_result').offset().top;
+        // 移動先を数値で取得(ゆとり分だけ引く)
+        var position = $('#headline_result').offset().top - 10;
         // スムーススクロール
         $('body,html').animate({scrollTop:position}, 400, 'swing');
 
