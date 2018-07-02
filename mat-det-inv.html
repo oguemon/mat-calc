@@ -169,13 +169,12 @@
         if (ele_input_attention.style.display != 'block')
         {
             btn_input_attention.innerHTML = '▲入力時の注意事項を閉じる';
-            ele_input_attention.style.display = 'block';
         }
         else
         {
             btn_input_attention.innerHTML = '▼入力時の注意事項を開く';
-            ele_input_attention.style.display = 'none';
         }
+        $('#input_attention').slideToggle(300);
     }
 
     /*
