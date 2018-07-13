@@ -56,7 +56,18 @@
             <div class="container">
                 <!-- 入力フォーム -->
                 <h2>行列の入力</h2>
-                <div id="matrix_input"></div>
+                <div id="matrix_input">
+                    <input type="text" id="a-0" name="matrix[]" value="0">
+                    <input type="text" id="a-1" name="matrix[]" value="0">
+                    <input type="text" id="a-2" name="matrix[]" value="0"><br>
+                    <input type="text" id="a-3" name="matrix[]" value="0">
+                    <input type="text" id="a-4" name="matrix[]" value="0">
+                    <input type="text" id="a-5" name="matrix[]" value="0"><br>
+                    <input type="text" id="a-6" name="matrix[]" value="0">
+                    <input type="text" id="a-7" name="matrix[]" value="0">
+                    <input type="text" id="a-8" name="matrix[]" value="0">
+                </div>
+                
                 <!-- 注意事項 -->
                 <a id="input_attention_btn">▼入力時の注意事項を開く</a>
                 <div id="input_attention">
@@ -323,7 +334,6 @@
 
         mat_input.innerHTML = string;
     }
-
     /*
      *  行列をmathjaxで出力
      */
