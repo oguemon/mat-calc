@@ -1,0 +1,5 @@
+.vscode/
+/node_modules
+mat-det-inv.css
+mat-det-inv.min.js
+package-lock.json
