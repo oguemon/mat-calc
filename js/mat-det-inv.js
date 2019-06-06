@@ -1,77 +1,69 @@
-var btn_input_attention = document.getElementById('input_attention_btn');
-var select_digit = document.getElementById('show_digit');
-var check_drill = document.getElementById('drill');
-var btn_dimadd = document.getElementById('dim_add');
-var btn_dimdec = document.getElementById('dim_dec');
-var btn_reset  = document.getElementById('reset');
-var btn_calc   = document.getElementById('calc');
+var $ = require('jquery');
 
 var N = 3;
 var digit = 2;
 
-window.onload = function ()
-{
+$(window).on('load',function(){
     updateInputForm ();
-};
+});
 
 /*
-  *  入力時の注意事項のリンクが開かれたら
-  */
-btn_input_attention.onclick = function ()
+ *  入力時の注意事項のリンクが開かれたら
+ */
+$('#input_attention_btn').on('click', function ()
 {
-    var ele_input_attention = document.getElementById('input_attention');
-    if (ele_input_attention.style.display != 'block')
+    if ($('#input_attention').css('display') != 'block')
     {
-        btn_input_attention.innerHTML = '▲入力時の注意事項を閉じる';
+        $(this).html('▲入力時の注意事項を閉じる');
     }
     else
     {
-        btn_input_attention.innerHTML = '▼入力時の注意事項を開く';
+        $(this).html('▼入力時の注意事項を開く');
     }
     $('#input_attention').slideToggle(300);
-}
+});
 
 /*
-  *  表示する小数以下の桁数を決めるセレクターを変更したら
-  */
-  select_digit.onchange = function ()
+ *  表示する小数以下の桁数を決めるセレクターを変更したら
+ */
+$('#show_digit').on('change', function ()
 {
     // 桁数を設定
-    digit = select_digit.value;
-}
+    digit = $(this).val();
+});
 
 /*
-  *  計算ドリルモードを変更したら
-  */
-check_drill.onchange = function ()
+ *  計算ドリルモードを変更したら
+ */
+$('#drill').on('change', function ()
 {
     updateInputForm();
-}
+});
 
 /*
   *  次元を増やすボタンを押したら
   */
-btn_dimadd.onclick = function ()
+$('#dim_add').on('click', function ()
 {
     N = Math.min(N+1, 10);
     updateInputForm ();
     return;
-}
+});
 
 /*
-  *  次元を減らすボタンを押したら
-  */
-btn_dimdec.onclick = function ()
+ *  次元を減らすボタンを押したら
+ */
+$('#dim_dec').on('click', function ()
 {
     N = Math.max(N-1, 2);
     updateInputForm ();
     return;
-}
+});
 
 /*
-  *  リセットボタンを押したら
-  */
-  btn_reset.onclick = function ()
+ *  リセットボタンを押したら
+ */
+$('#reset').on('click', function ()
 {
     var agree = window.confirm("行列の中身を全てリセットします。\nよろしいでしょうか？");
     if (agree)
@@ -79,12 +71,12 @@ btn_dimdec.onclick = function ()
         updateInputForm ();
     }
     return;
-}
+});
 
 /*
-  *  計算ボタンを押したら
-  */
-btn_calc.onclick = function ()
+ *  計算ボタンを押したら
+ */
+$('#calc').on('click', function ()
 {
     var start_ms = new Date().getTime();
     var A = [];
@@ -94,32 +86,31 @@ btn_calc.onclick = function ()
     var input_error = false;
     for (var i = 0; i < N * N; i++)
     {
-        var ele = document.getElementById('a-' + i);
-        var tmp_value = ele.value;
+        ele = $('#a-' + String(i));
+        var tmp_value = ele.val();
         if (isNumber(tmp_value))
         {
             A[i] = tmp_value;
-            ele.style.border = '1px solid #dddddd';
+            ele.css('border', '1px solid #dddddd');
         }
         else
         {
-            ele.style.border = '2px solid #EB040D';
+            ele.css('border', '2px solid #EB040D');
             input_error = true;
         }
     }
-    ele = document.getElementById('error_msg_box');
-    ele.innerHTML = '';
+    ele = $('#error_msg_box');
+    ele.html('');
     if (input_error)
     {
-        ele.innerHTML = '<div id="error_msg">正しく入力して下さい！</div>';
+        ele.html('<div id="error_msg">正しく入力して下さい！</div>');
         return;
     }
 
     // 入力した行列のアップ
-    ele = document.getElementById('matrix_A');
-    ele.innerHTML  = '<h3>入力した行列</h3>'
-    ele.innerHTML += matrix2MathJax(A, 'A');
-    MathJax.Hub.Typeset(ele);
+    ele = $('#matrix_A');
+    ele.html('<h3>入力した行列</h3>' + matrix2MathJax(A, 'A'));
+    MathJax.Hub.Typeset(ele[0]);
 
     // LU分解と行列式を求める
     var LU = makeLU(A);
@@ -127,18 +118,16 @@ btn_calc.onclick = function ()
     // 表示する小数以下の桁数調整
     var digit_adjuster = Math.pow(10, digit);
     // 行列式のアップ
-    ele = document.getElementById('matrix_detA');
-    ele.innerHTML  = '<h3>行列式</h3>'
-    ele.innerHTML += '$$|A|=' + (Math.round(det_A * digit_adjuster) / digit_adjuster) + '$$';
-    MathJax.Hub.Typeset(ele);
+    ele = $('#matrix_detA');
+    ele.html('<h3>行列式</h3>' + '$$|A|=' + (Math.round(det_A * digit_adjuster) / digit_adjuster) + '$$');
+    MathJax.Hub.Typeset(ele[0]);
 
     // 逆行列を求める
     var rev_A = makeInverceA(LU);
     // 求めた逆行列のアップ
-    ele = document.getElementById('matrix_revA');
-    ele.innerHTML  = '<h3>逆行列</h3>'
-    ele.innerHTML += (det_A == 0)? '<em>逆行列はありません！</em>' : matrix2MathJax(rev_A, 'A^{-1}');
-    MathJax.Hub.Typeset(ele);
+    ele = $('#matrix_revA');
+    ele.html('<h3>逆行列</h3>' + ((det_A == 0)? '<em>逆行列はありません！</em>' : matrix2MathJax(rev_A, 'A^{-1}')));
+    MathJax.Hub.Typeset(ele[0]);
 
     // 移動先を数値で取得(ゆとり分だけ引く)
     var position = $('#headline_result').offset().top - 10;
@@ -147,11 +136,11 @@ btn_calc.onclick = function ()
 
     console.log('処理時間：' + (new Date().getTime() - start_ms) + ' ms');
     return;
-}
+});
 
 /*
-  *  数字かどうかのチェック
-  */
+ *  数字かどうかのチェック
+ */
 function isNumber(num_value){
     // チェック条件パターン
     var pattern = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
@@ -160,12 +149,12 @@ function isNumber(num_value){
 }
 
 /*
-  *  フォームの描画
-  */
-  function updateInputForm ()
+ *  フォームの描画
+ */
+function updateInputForm ()
 {
-    var mat_input = document.getElementById('matrix_input');
-    var drill  = check_drill.checked;
+    var mat_input = $('#matrix_input');
+    var drill  = $('#drill').prop('checked');
     var string = '';
     for (var i = 0; i < N * N; i++)
     {
@@ -175,11 +164,12 @@ function isNumber(num_value){
         if ((i + 1) % N == 0) string +='<br>';
     }
 
-    mat_input.innerHTML = string;
+    mat_input.html(string);
 }
+
 /*
-  *  行列をmathjaxで出力
-  */
+ *  行列をmathjaxで出力
+ */
 function matrix2MathJax(matrix, name)
 {
     var string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
@@ -197,8 +187,8 @@ function matrix2MathJax(matrix, name)
 }
 
 /*
-  *  行列式を求める
-  */
+ *  行列式を求める
+ */
 function makeDeterminant(LU)
 {
     var L = LU.L;
@@ -220,9 +210,9 @@ function makeDeterminant(LU)
 }
 
 /*
-  *  掃き出し計算をして逆行列を求める
-  *  (三角行列なので効率的)
-  */
+ *  掃き出し計算をして逆行列を求める
+ *  (三角行列なので効率的)
+ */
 function makeInverceA(LU)
 {
     var L = LU.L;
@@ -235,9 +225,9 @@ function makeInverceA(LU)
     }
 
     /*
-      *  逆行列の卵を単位行列の形に初期化
-      *  (単位行列にすることで効率化する)
-      */
+     *  逆行列の卵を単位行列の形に初期化
+     *  (単位行列にすることで効率化する)
+     */
     var B = (new Array(L.length)).fill(0);
     var C = (new Array(L.length)).fill(0);
     for (var i = 0; i < N; i++)
@@ -247,8 +237,8 @@ function makeInverceA(LU)
     }
 
     /*
-      *  LC = EとなるC(即ちLの逆行列)を求める
-      */
+     *  LC = EとなるC(即ちLの逆行列)を求める
+     */
     // 左上から、行→列の順に走査
     for (var j = 0; j < N; j++)
     {
@@ -263,8 +253,8 @@ function makeInverceA(LU)
     }
 
     /*
-      *  UB = EとなるB(即ちUの逆行列)を求める
-      */
+     *  UB = EとなるB(即ちUの逆行列)を求める
+     */
     // 右下から、行→列の順に走査
     for (var j = N - 1; 0 <= j; j--)
     {
@@ -281,8 +271,8 @@ function makeInverceA(LU)
     }
 
     /*
-      * A逆行列をU^(-1)L^(-1)から求める
-      */
+     * A逆行列をU^(-1)L^(-1)から求める
+     */
     var rev_UL = multSquareMatrix (B, C);
     var rev_A = [];
     for (var j = 0; j < LU.pivot.length; j++)
@@ -310,8 +300,8 @@ function makeLU (A)
     for (var i = 0; i < N - 1; i++)
     {
         /*
-          * 対角成分が0にならないように行を入れ替え
-          */
+         * 対角成分が0にならないように行を入れ替え
+         */
         // i+1行目以下のi列目成分の中で絶対値が最大のものを求める
         var max = {'line': i, 'value': Math.abs(A[i + i * N])};
         for (var j = i + 1; j < N; j++)
@@ -346,15 +336,15 @@ function makeLU (A)
         }
 
         /*
-          * i行目のの割り算(U作り)
-          */
+         * i行目のの割り算(U作り)
+         */
         for (var j = i + 1; j < N; j++)
         {
             A[i + j * N] /= A[i + i * N];
         }
         /*
-          * j行目とi列目で行列を作って余因子から引く
-          */
+         * j行目とi列目で行列を作って余因子から引く
+         */
         for (var n = i + 1; n < N; n++)
         {
             for (var m = i + 1; m < N; m++)
@@ -390,8 +380,8 @@ function makeLU (A)
 }
 
 /*
-  *  正方行列のかけ算をする（定義できないときはfalse）
-  */
+ *  正方行列のかけ算をする（定義できないときはfalse）
+ */
 function multSquareMatrix (A, B)
 {
     // AとBの要素数がマッチしない or 要素数が平方数じゃない
