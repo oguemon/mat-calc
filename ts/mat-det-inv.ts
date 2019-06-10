@@ -1,7 +1,13 @@
-var $ = require('jquery');
+let N: number = 3;
+let digit: number = 2;
 
-var N = 3;
-var digit = 2;
+interface LU {
+    L: number[],
+    U: number[],
+    LxU: number[],
+    pivot: number[],
+    pivot_count: number
+}
 
 $(window).on('load',function(){
     updateInputForm ();
@@ -29,7 +35,7 @@ $('#input_attention_btn').on('click', function ()
 $('#show_digit').on('change', function ()
 {
     // 桁数を設定
-    digit = $(this).val();
+    digit = Number($(this).val());
 });
 
 /*
@@ -78,8 +84,8 @@ $('#reset').on('click', function ()
  */
 $('#calc').on('click', function ()
 {
-    var start_ms = new Date().getTime();
-    var A = [];
+    var start_ms: number = new Date().getTime();
+    var A: number[] = [];
     var ele; // id要素を格納
 
     // 行列の入力
@@ -87,10 +93,10 @@ $('#calc').on('click', function ()
     for (var i = 0; i < N * N; i++)
     {
         ele = $('#a-' + String(i));
-        var tmp_value = ele.val();
+        const tmp_value: string = String(ele.val());
         if (isNumber(tmp_value))
         {
-            A[i] = tmp_value;
+            A[i] = Number(tmp_value);
             ele.css('border', '1px solid #dddddd');
         }
         else
@@ -99,18 +105,17 @@ $('#calc').on('click', function ()
             input_error = true;
         }
     }
-    ele = $('#error_msg_box');
-    ele.html('');
+    $('#error_msg_box').html('');
     if (input_error)
     {
-        ele.html('<div id="error_msg">正しく入力して下さい！</div>');
+        $('#error_msg_box').html('<div id="error_msg">正しく入力して下さい！</div>');
         return;
     }
 
     // 入力した行列のアップ
     ele = $('#matrix_A');
     ele.html('<h3>入力した行列</h3>' + matrix2MathJax(A, 'A'));
-    MathJax.Hub.Typeset(ele[0]);
+    MathJax.Hub.Typeset(ele[0], function(){});
 
     // LU分解と行列式を求める
     var LU = makeLU(A);
@@ -120,17 +125,19 @@ $('#calc').on('click', function ()
     // 行列式のアップ
     ele = $('#matrix_detA');
     ele.html('<h3>行列式</h3>' + '$$|A|=' + (Math.round(det_A * digit_adjuster) / digit_adjuster) + '$$');
-    MathJax.Hub.Typeset(ele[0]);
+    MathJax.Hub.Typeset(ele[0], function(){});
 
     // 逆行列を求める
-    var rev_A = makeInverceA(LU);
+    console.log(LU);
+    const rev_A: number[] = makeInverceA(LU);
     // 求めた逆行列のアップ
     ele = $('#matrix_revA');
     ele.html('<h3>逆行列</h3>' + ((det_A == 0)? '<em>逆行列はありません！</em>' : matrix2MathJax(rev_A, 'A^{-1}')));
-    MathJax.Hub.Typeset(ele[0]);
+    MathJax.Hub.Typeset(ele[0], function(){});
 
     // 移動先を数値で取得(ゆとり分だけ引く)
-    var position = $('#headline_result').offset().top - 10;
+    const headline_result_offset: JQuery.Coordinates | undefined = $('#headline_result').offset();
+    const position = (headline_result_offset != undefined)? headline_result_offset.top - 10 : 0;
     // スムーススクロール
     $('body,html').animate({scrollTop:position}, 400, 'swing');
 
@@ -141,7 +148,8 @@ $('#calc').on('click', function ()
 /*
  *  数字かどうかのチェック
  */
-function isNumber(num_value){
+function isNumber(num_value: string)
+{
     // チェック条件パターン
     var pattern = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
     // 数値チェック
@@ -170,7 +178,7 @@ function updateInputForm ()
 /*
  *  行列をmathjaxで出力
  */
-function matrix2MathJax(matrix, name)
+function matrix2MathJax(matrix: number[], name: string) :string
 {
     var string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
     var digit_adjuster = Math.pow(10, digit);
@@ -189,10 +197,8 @@ function matrix2MathJax(matrix, name)
 /*
  *  行列式を求める
  */
-function makeDeterminant(LU)
+function makeDeterminant(LU: LU) :number
 {
-    var L = LU.L;
-    var U = LU.U;
     var det = 1;
 
     // Uの対角成分の積を求める
@@ -213,7 +219,7 @@ function makeDeterminant(LU)
  *  掃き出し計算をして逆行列を求める
  *  (三角行列なので効率的)
  */
-function makeInverceA(LU)
+function makeInverceA(LU: LU) :number[]
 {
     var L = LU.L;
     var U = LU.U;
@@ -221,19 +227,22 @@ function makeInverceA(LU)
     // 逆行列が定義されるかどうかをチェック
     if (makeDeterminant(LU) == 0)
     {
-        return false;
+        return [];
     }
 
     /*
      *  逆行列の卵を単位行列の形に初期化
      *  (単位行列にすることで効率化する)
      */
-    var B = (new Array(L.length)).fill(0);
-    var C = (new Array(L.length)).fill(0);
+    var B: number[] = new Array(L.length);
+    var C: number[] = new Array(L.length);
     for (var i = 0; i < N; i++)
     {
-        B[i + i * N] = 1;
-        C[i + i * N] = 1;
+        for (var j = 0; j < N; j++)
+        {
+            B[i + j * N] = (i == j)? 1 : 0;
+            C[i + j * N] = (i == j)? 1 : 0;
+        }
     }
 
     /*
@@ -273,20 +282,23 @@ function makeInverceA(LU)
     /*
      * A逆行列をU^(-1)L^(-1)から求める
      */
-    var rev_UL = multSquareMatrix (B, C);
-    var rev_A = [];
-    for (var j = 0; j < LU.pivot.length; j++)
+    const rev_UL: number[] = multSquareMatrix (B, C);
+    let rev_A: number[] = [];
+    for (let j = 0; j < LU.pivot.length; j++)
     {
-        for (var i = 0; i < N; i++)
+        for (let i = 0; i < N; i++)
         {
             rev_A[LU.pivot[j] + i * N] = rev_UL[j + i * N];
         }
     }
+
+    console.log(rev_UL);
+    console.log(rev_A);
     return rev_A;
 }
 
 // LU分解を行う
-function makeLU (A)
+function makeLU (A: number[]): LU
 {
     // 行の入れ替え状況を格納する配列
     var pivot = [];
@@ -297,14 +309,14 @@ function makeLU (A)
     var pivot_count = 0;
 
     // i行目について扱う
-    for (var i = 0; i < N - 1; i++)
+    for (let i = 0; i < N - 1; i++)
     {
         /*
          * 対角成分が0にならないように行を入れ替え
          */
         // i+1行目以下のi列目成分の中で絶対値が最大のものを求める
-        var max = {'line': i, 'value': Math.abs(A[i + i * N])};
-        for (var j = i + 1; j < N; j++)
+        let max = {'line': i, 'value': Math.abs(A[i + i * N])};
+        for (let j = i + 1; j < N; j++)
         {
             if (Math.abs(A[i + j * N]) > max.value)
             {
@@ -320,7 +332,7 @@ function makeLU (A)
         // 最大が0じゃなくて対角成分以上の行があった→行を入れ替える
         if (i != max.line)
         {
-            for (var j = 0; j < N; j++)
+            for (let j = 0; j < N; j++)
             {
                 // 行の入れ替え
                 var tmp = A[j + i * N];
@@ -376,18 +388,28 @@ function makeLU (A)
         }
     }
 
-    return {'L': L, 'U': U, 'LxU': multSquareMatrix(L, U), 'pivot': pivot, 'pivot_count': pivot_count};
+    let ans: LU = {
+        L: L,
+        U: U,
+        LxU: multSquareMatrix(L, U),
+        pivot: pivot,
+        pivot_count: pivot_count
+    };
+
+    return ans;
 }
+
+
 
 /*
  *  正方行列のかけ算をする（定義できないときはfalse）
  */
-function multSquareMatrix (A, B)
+function multSquareMatrix (A: number[], B: number[]) : number[]
 {
-    // AとBの要素数がマッチしない or 要素数が平方数じゃない
-    if (A.length != B.length || !Number.isInteger(Math.pow(A.length, 0.5)))
+    // AとBの要素数がマッチしない or 正方行列でない
+    if (A.length != B.length || !is_square(A.length))
     {
-        return false;
+        return [];
     }
 
     var AB = [];
@@ -406,4 +428,13 @@ function multSquareMatrix (A, B)
     }
 
     return AB;
+}
+
+/*
+ *  平方数かどうかを確認
+ */
+function is_square(n: number): boolean
+{
+    const sqrt: number = Math.floor(Math.pow(n, 0.5));
+    return (sqrt * sqrt == n);
 }
