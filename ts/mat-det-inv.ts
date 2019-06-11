@@ -289,8 +289,6 @@ function makeInverceA(LU: LU) : number[]
         }
     }
 
-    console.log(rev_UL);
-    console.log(rev_A);
     return rev_A;
 }
 
