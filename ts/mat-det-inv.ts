@@ -1,3 +1,4 @@
+/// <reference path="mat-calc.ts" />
 let N: number = 3;
 let digit: number = 2;
 
@@ -11,6 +12,73 @@ interface LU {
 
 $(window).on('load',function(){
     updateInputForm ();
+
+    // 行列の初期化
+    const line = 3;
+    const row = 3;
+    let rank = 0;
+    let A: Mat.Mat = {
+        lines : line,
+        rows: row,
+        val: new Array()
+    };
+
+    A.val[0] = new Array();
+    A.val[1] = new Array();
+    A.val[2] = new Array();
+    A.val[0][0] = new Mynum(9);
+    A.val[0][1] = new Mynum(5);
+    A.val[0][2] = new Mynum(2);
+    A.val[1][0] = new Mynum(4);
+    A.val[1][1] = new Mynum(1);
+    A.val[1][2] = new Mynum(8);
+    A.val[2][0] = new Mynum(5);
+    A.val[2][1] = new Mynum(8);
+    A.val[2][2] = new Mynum(3);
+    /*
+    for (let i = 0; i < line; i++) {
+        A.val[i] = new Array();
+        for (let j = 0; j < row; j++) {
+            A.val[i][j] = new Mynum(i * row + j + 1);
+        }
+    }
+    */
+
+    // 階段行列化
+    // 列を操作
+    for (let j = 0; j < row; j++) {
+        // '段差'の成分がゼロならそれ以降の非零成分と交換
+        let count = rank;
+        while (count < line - 1 && A.val[count][j].isZero()) {
+            count++;
+            if (A.val[count][j].isZero() == false) {
+                Mat.swap2Lines(A, rank, count);
+                break;
+            }
+        }
+
+        // ヒットしないまま末尾へ到達した（つまり全部ゼロ）
+        if (count == line - 1 && rank < count) {
+            continue;
+        }
+
+        // 行のゼロ化
+        for (let i = rank + 1; i < line; i++) {
+            // 成分がゼロ以外なら加算して成分をゼロ化
+            if (A.val[i][j].isZero() == false) {
+                Mat.addMulLineByScalar(A, rank, Mynum.mul(new Mynum(-1), Mynum.div(A.val[i][j], A.val[rank][j])), i);
+            }
+        }
+
+        // 階数を上げる
+        rank++;
+    }
+
+    // 結果の表示
+    const ele_matrix_rankedA: JQuery<HTMLElement> = $('#matrix_rankedA');
+    ele_matrix_rankedA.html('<h3>入力した行列</h3>' + mat2MathJax(A, 'A'));
+    MathJax.Hub.Typeset(ele_matrix_rankedA[0], function(){});
+    this.console.log(rank);
 });
 
 /*
@@ -173,7 +241,7 @@ function updateInputForm ()
 }
 
 /*
- *  行列をmathjaxで出力
+ *  行列をmathjaxで出力（旧バージョン）
  */
 function matrix2MathJax(matrix: number[], name: string) : string
 {
@@ -185,6 +253,25 @@ function matrix2MathJax(matrix: number[], name: string) : string
         string += (Math.round(matrix[i] * digit_adjuster) / digit_adjuster);
         // 行列の隙間か改行か
         string += ((i + 1) % N == 0) ? '\\\\' : ' & ';
+    }
+    string += '\\end{array}\\right)$$';
+
+    return string;
+}
+
+/*
+ *  行列をmathjaxで出力（新バージョン・値を丸めない）
+ */
+function mat2MathJax(matrix: Mat.Mat, name: string) : string
+{
+    let string: string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
+    for (let i = 0; i < matrix.lines; i++)
+    {
+        for (let j = 0; j < matrix.rows; j++)
+        {
+            string += matrix.val[i][j].toLatex() + ' & ';
+        }
+        string += '\\\\';
     }
     string += '\\end{array}\\right)$$';
 

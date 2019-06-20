@@ -18,32 +18,32 @@ class Mynum {
     }
   }
 
-  public add (a: Mynum): Mynum {
+  static add (a: Mynum, b: Mynum): Mynum {
     return new Mynum(
-      this.n * a.d + a.n * this.d,
-      this.d * a.d
-    );
+      a.n * b.d + b.n * a.d,
+      a.d * b.d
+    ).reduction ();
   }
 
-  public sub (a: Mynum): Mynum {
+  static sub (a: Mynum, b: Mynum): Mynum {
     return new Mynum(
-      this.n * a.d - a.n * this.d,
-      this.d * a.d
-    );
+      a.n * b.d - b.n * a.d,
+      a.d * b.d
+    ).reduction ();
   }
 
-  public mul (a: Mynum): Mynum {
+  static mul (a: Mynum, b: Mynum): Mynum {
     return new Mynum(
-      this.n * a.n,
-      this.d * a.d
-    );
+      a.n * b.n,
+      a.d * b.d
+    ).reduction ();
   }
 
-  public div (a: Mynum): Mynum {
+  static div (a: Mynum, b: Mynum): Mynum {
     return new Mynum(
-      this.n * a.d,
-      this.d * a.n
-    );
+      a.n * b.d,
+      a.d * b.n
+    ).reduction ();
   }
 
   public reduction (): Mynum {
@@ -64,10 +64,22 @@ class Mynum {
         v = r;
     }
 
-    this.n = this.n / common_div;
-    this.d = this.d / common_div;
+    this.n /= common_div;
+    this.d /= common_div;
 
     return this;
+  }
+
+  public clone (): Mynum {
+    return new Mynum(this.n, this.d);
+  }
+
+  public eq (a: Mynum): Boolean {
+    return (this.n == a.n && this.d == a.d);
+  }
+
+  public isZero (): Boolean {
+    return (this.n == 0);
   }
 
   public toLatex (): string {
