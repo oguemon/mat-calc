@@ -2,6 +2,7 @@
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const typescript = require('gulp-typescript');
+const browsersync = require('browser-sync');
 
 /*
 var browserify = require('browserify');
@@ -44,11 +45,29 @@ gulp.task('compile-js', function() {
             .pipe(gulp.dest('./'));
 });
 
+gulp.task('build-server', function (done) {
+    browsersync.init({
+        server: {
+            baseDir: "./",
+            index  : "mat-det-inv.html"
+        }
+    });
+    done();
+    console.log('Server was launched');
+});
+
+gulp.task('browser-reload', function (done){
+    browsersync.reload();
+    done();
+    console.log('Browser reload completed');
+});
+
 gulp.task('watch', function() {
-    gulp.watch('./sass/*.scss', gulp.parallel('sass'));
-    gulp.watch('./ts/*.ts', gulp.parallel('compile-js'));
+    gulp.watch('./*.html', gulp.series('browser-reload'));
+    gulp.watch('./sass/*.scss', gulp.series('sass', 'browser-reload'));
+    gulp.watch('./ts/*.ts', gulp.series('compile-js', 'browser-reload'));
     //gulp.watch('./js/mat-det-inv.js', gulp.parallel('bundlejs'));
 });
 
-const defaultTasks = gulp.series('watch');
+const defaultTasks = gulp.series('build-server', 'watch');
 gulp.task('default', defaultTasks);
