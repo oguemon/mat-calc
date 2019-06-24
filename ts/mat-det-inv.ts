@@ -1,6 +1,5 @@
 /// <reference path="mat-calc.ts" />
 let N: number = 3;
-let digit: number = 2;
 
 interface LU {
     L: number[],
@@ -12,73 +11,6 @@ interface LU {
 
 $(window).on('load',function(){
     updateInputForm ();
-
-    // 行列の初期化
-    const line = 3;
-    const row = 3;
-    let rank = 0;
-    let A: Mat.Mat = {
-        lines : line,
-        rows: row,
-        val: new Array()
-    };
-
-    A.val[0] = new Array();
-    A.val[1] = new Array();
-    A.val[2] = new Array();
-    A.val[0][0] = new Mynum(9);
-    A.val[0][1] = new Mynum(5);
-    A.val[0][2] = new Mynum(2);
-    A.val[1][0] = new Mynum(4);
-    A.val[1][1] = new Mynum(1);
-    A.val[1][2] = new Mynum(8);
-    A.val[2][0] = new Mynum(5);
-    A.val[2][1] = new Mynum(8);
-    A.val[2][2] = new Mynum(3);
-    /*
-    for (let i = 0; i < line; i++) {
-        A.val[i] = new Array();
-        for (let j = 0; j < row; j++) {
-            A.val[i][j] = new Mynum(i * row + j + 1);
-        }
-    }
-    */
-
-    // 階段行列化
-    // 列を操作
-    for (let j = 0; j < row; j++) {
-        // '段差'の成分がゼロならそれ以降の非零成分と交換
-        let count = rank;
-        while (count < line - 1 && A.val[count][j].isZero()) {
-            count++;
-            if (A.val[count][j].isZero() == false) {
-                Mat.swap2Lines(A, rank, count);
-                break;
-            }
-        }
-
-        // ヒットしないまま末尾へ到達した（つまり全部ゼロ）
-        if (count == line - 1 && rank < count) {
-            continue;
-        }
-
-        // 行のゼロ化
-        for (let i = rank + 1; i < line; i++) {
-            // 成分がゼロ以外なら加算して成分をゼロ化
-            if (A.val[i][j].isZero() == false) {
-                Mat.addMulLineByScalar(A, rank, Mynum.mul(new Mynum(-1), Mynum.div(A.val[i][j], A.val[rank][j])), i);
-            }
-        }
-
-        // 階数を上げる
-        rank++;
-    }
-
-    // 結果の表示
-    const ele_matrix_rankedA: JQuery<HTMLElement> = $('#matrix_rankedA');
-    ele_matrix_rankedA.html('<h3>入力した行列</h3>' + mat2MathJax(A, 'A'));
-    MathJax.Hub.Typeset(ele_matrix_rankedA[0], function(){});
-    this.console.log(rank);
 });
 
 /*
@@ -95,15 +27,6 @@ $('#input_attention_btn').on('click', function ()
         $(this).html('▼入力時の注意事項を開く');
     }
     $('#input_attention').slideToggle(300);
-});
-
-/*
- *  表示する小数以下の桁数を決めるセレクターを変更したら
- */
-$('#show_digit').on('change', function ()
-{
-    // 桁数を設定
-    digit = Number($(this).val());
 });
 
 /*
@@ -153,23 +76,50 @@ $('#reset').on('click', function ()
 $('#calc').on('click', function ()
 {
     const start_ms: number = new Date().getTime();
-    let A: number[] = [];
 
-    // 行列の入力
+    // 行列の初期化
+    const line: number = N;
+    const row: number = N;
+    let rank: number = 0;
+    let swap_count: number = 0;
+    let A: Mat.Mat = {
+        lines : line,
+        rows: row,
+        val: new Array()
+    };
+    let B: Mat.Mat = {
+        lines : line,
+        rows: row,
+        val: new Array()
+    };
+    let inputA: Mat.Mat = {
+        lines : line,
+        rows: row,
+        val: new Array()
+    };
+
+    // 行列の入力（A）
     let input_error: boolean = false;
-    for (let i = 0; i < N * N; i++)
+    for (let i = 0; i < A.lines; i++)
     {
-        const ele: JQuery<HTMLElement> = $('#a-' + String(i));
-        const tmp_value: string = String(ele.val());
-        if (isNumber(tmp_value))
+        A.val[i] = new Array();
+        inputA.val[i] = new Array();
+        for (let j = 0; j < A.rows; j++)
         {
-            A[i] = Number(tmp_value);
-            ele.css('border', '1px solid #dddddd');
-        }
-        else
-        {
-            ele.css('border', '2px solid #EB040D');
-            input_error = true;
+            const ele: JQuery<HTMLElement> = $('#a-' + String(i * A.rows + j));
+            const tmp_value: string = String(ele.val());
+            if (isNumber(tmp_value))
+            {
+                console.log(tmp_value);
+                A.val[i][j] = new Mynum(tmp_value);
+                inputA.val[i][j] = new Mynum(tmp_value);
+                ele.css('border', '1px solid #dddddd');
+            }
+            else
+            {
+                ele.css('border', '2px solid #EB040D');
+                input_error = true;
+            }
         }
     }
     $('#error_msg_box').html('');
@@ -179,27 +129,116 @@ $('#calc').on('click', function ()
         return;
     }
 
-    // 入力した行列のアップ
-    const ele_matrix_A: JQuery<HTMLElement> = $('#matrix_A');
-    ele_matrix_A.html('<h3>入力した行列</h3>' + matrix2MathJax(A, 'A'));
-    MathJax.Hub.Typeset(ele_matrix_A[0], function(){});
+    // 行列B（単位行列）の初期化
+    for (let i = 0; i < B.lines; i++)
+    {
+        B.val[i] = new Array();
+        for (let j = 0; j < B.rows; j++)
+        {
+            B.val[i][j] = (i == j)? new Mynum(1) : new Mynum(0);
+        }
+    }
 
-    // LU分解と行列式を求める
-    const LU: LU = makeLU(A);
-    const det_A: number = makeDeterminant(LU);
-    // 表示する小数以下の桁数調整
-    const digit_adjuster: number = Math.pow(10, digit);
-    // 行列式のアップ
+    // 階段行列化
+    // 列を操作
+    for (let j = 0; j < row; j++) {
+        // '段差'の成分がゼロならそれ以降の非零成分と交換
+        if (A.val[rank][j].isZero()) {
+            let found_nonzero: boolean = false;
+            for (let i = rank + 1; i < line; i++) {
+                // 非零成分と出会ったら
+                if (A.val[i][j].isZero() == false) {
+                    Mat.swap2Lines(A, rank, i);
+                    Mat.swap2Lines(B, rank, i);
+                    found_nonzero = true;
+                    swap_count++;
+                    break;
+                }
+            }
+
+            // ヒットしないまま末尾へ到達した（つまり全部ゼロ）
+            if (found_nonzero == false) {
+                continue;
+            }
+        }
+
+        // 行のゼロ化
+        for (let i = rank + 1; i < line; i++) {
+            // 成分がゼロ以外なら加算して成分をゼロ化
+            if (A.val[i][j].isZero() == false) {
+                const mlt: Mynum = Mynum.mul(new Mynum(-1), Mynum.div(A.val[i][j], A.val[rank][j]));
+                Mat.addMulLineByScalar(A, rank, mlt, i);
+                Mat.addMulLineByScalar(B, rank, mlt, i);
+            }
+        }
+
+        // 階数を上げる
+        rank++;
+    }
+
+    // 対角成分の積に基づいて行列式を求める
+    let detA: Mynum = (swap_count % 2 == 0) ? new Mynum(1) : new Mynum(-1);
+    for (let i = 0; i < N; i++) {
+        detA = Mynum.mul(detA, A.val[i][i]);
+    }
+
+    // 結果の表示
+    const ele_matrix_inputA: JQuery<HTMLElement> = $('#matrix_A');
+    ele_matrix_inputA.html('<h3>入力した行列</h3>' + Mat.toMathJax(inputA, 'A'));
+    MathJax.Hub.Typeset(ele_matrix_inputA[0], function(){});
+
+    const ele_matrix_triA: JQuery<HTMLElement> = $('#matrix_triA');
+    ele_matrix_triA.html('<h3>三角化</h3>' + Mat.toMathJax(A, 'A'));
+    MathJax.Hub.Typeset(ele_matrix_triA[0], function(){});
+
+    const ele_matrix_rankA: JQuery<HTMLElement> = $('#matrix_rankA');
+    ele_matrix_rankA.html('$$rankA = ' + rank + '$$');
+    MathJax.Hub.Typeset(ele_matrix_rankA[0], function(){});
+
+
     const ele_matrix_detA: JQuery<HTMLElement> = $('#matrix_detA');
-    ele_matrix_detA.html('<h3>行列式</h3>' + '$$|A|=' + (Math.round(det_A * digit_adjuster) / digit_adjuster) + '$$');
+    ele_matrix_detA.html('<h3>行列式</h3>' + '$$|A|=' + detA.toLatex() + '$$');
     MathJax.Hub.Typeset(ele_matrix_detA[0], function(){});
 
-    // 逆行列を求める
-    const rev_A: number[] = makeInverceA(LU);
-    // 求めた逆行列のアップ
     const ele_matrix_revA: JQuery<HTMLElement> = $('#matrix_revA');
-    ele_matrix_revA.html('<h3>逆行列</h3>' + ((det_A == 0)? '<em>逆行列はありません！</em>' : matrix2MathJax(rev_A, 'A^{-1}')));
-    MathJax.Hub.Typeset(ele_matrix_revA[0], function(){});
+    ele_matrix_revA.html('<h3>逆行列</h3>');
+    // 正方行列の次数と階数が同じなら逆行列を求める
+    if (N == rank) {
+        // 単位行列化
+        // 列を操作
+        for (let j = row - 1; j >= 0; j--) {
+            // 行のゼロ化
+            for (let i = j - 1; i >= 0; i--) {
+                // 成分がゼロ以外なら加算して成分をゼロ化
+                if (A.val[i][j].isZero() == false) {
+                    const mlt: Mynum = Mynum.mul(new Mynum(-1), Mynum.div(A.val[i][j], A.val[j][j]));
+                    Mat.addMulLineByScalar(A, j, mlt, i);
+                    Mat.addMulLineByScalar(B, j, mlt, i);
+                }
+            }
+            // 対角成分の値を1にする
+            const mlt: Mynum = Mynum.div(new Mynum(1), A.val[j][j]);
+            Mat.mulLineByScalar(A, j, mlt);
+            Mat.mulLineByScalar(B, j, mlt);
+        }
+
+        // 結果の表示
+        ele_matrix_revA.append(Mat.toMathJax(B, 'A^{-1}'));
+        MathJax.Hub.Typeset(ele_matrix_revA[0], function(){});
+
+        // 掛け算して単位行列になるかチェック
+        /*
+        const ele_matrix_checkE: JQuery<HTMLElement> = $('#matrix_checkE');
+        ele_matrix_checkE.html('<h3>掛けた結果</h3>');
+        if (Mat.mul(inputA, B) != null) {
+            ele_matrix_checkE.append(Mat.toMathJax(Mat.mul(inputA, B), 'AA^{-1}'));
+            MathJax.Hub.Typeset(ele_matrix_checkE[0], function(){});
+        }
+        */
+    } else {
+        // 逆行列がない旨の表示
+        ele_matrix_revA.append('逆行列はありません（階数と正方行列の次数が異なるから）');
+    }
 
     // 移動先を数値で取得(ゆとり分だけ引く)
     const headline_result_offset: JQuery.Coordinates | undefined = $('#headline_result').offset();
@@ -207,7 +246,7 @@ $('#calc').on('click', function ()
     // スムーススクロール
     $('body,html').animate({scrollTop:position}, 400, 'swing');
 
-    console.log('処理時間：' + (new Date().getTime() - start_ms) + ' ms');
+    console.log('処理時間：' + String(new Date().getTime() - start_ms) + ' ms');
     return;
 });
 
@@ -216,8 +255,9 @@ $('#calc').on('click', function ()
  */
 function isNumber(num_value: string) : boolean
 {
-    // チェック条件パターン
-    const pattern: RegExp = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
+    // チェック条件パターン（小数・分数可能）
+    const pattern: RegExp = /^[-]?([1-9]\d*|0)([\/\.]0*[1-9]\d*)?$/;
+
     // 数値チェック
     return pattern.test(num_value);
 }
@@ -238,279 +278,6 @@ function updateInputForm ()
     }
 
     $('#matrix_input').html(string);
-}
-
-/*
- *  行列をmathjaxで出力（旧バージョン）
- */
-function matrix2MathJax(matrix: number[], name: string) : string
-{
-    let string: string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
-    const digit_adjuster: number = Math.pow(10, digit);
-    for (let i = 0; i < matrix.length; i++)
-    {
-        // 桁を丸める
-        string += (Math.round(matrix[i] * digit_adjuster) / digit_adjuster);
-        // 行列の隙間か改行か
-        string += ((i + 1) % N == 0) ? '\\\\' : ' & ';
-    }
-    string += '\\end{array}\\right)$$';
-
-    return string;
-}
-
-/*
- *  行列をmathjaxで出力（新バージョン・値を丸めない）
- */
-function mat2MathJax(matrix: Mat.Mat, name: string) : string
-{
-    let string: string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
-    for (let i = 0; i < matrix.lines; i++)
-    {
-        for (let j = 0; j < matrix.rows; j++)
-        {
-            string += matrix.val[i][j].toLatex() + ' & ';
-        }
-        string += '\\\\';
-    }
-    string += '\\end{array}\\right)$$';
-
-    return string;
-}
-
-/*
- *  行列式を求める
- */
-function makeDeterminant(LU: LU) : number
-{
-    let det: number = 1;
-
-    // Uの対角成分の積を求める
-    for (let i = 0; i < N; i++)
-    {
-        det *= LU.U[i + i * N];
-    }
-    // LU分解前における行の入れ替え回数が奇数ならマイナス
-    if (LU.pivot_count % 2 == 1)
-    {
-        det *= -1;
-    }
-
-    return det;
-}
-
-/*
- *  掃き出し計算をして逆行列を求める
- *  (三角行列なので効率的)
- */
-function makeInverceA(LU: LU) : number[]
-{
-    const L: number[] = LU.L;
-    const U: number[] = LU.U;
-
-    // 逆行列が定義されるかどうかをチェック
-    if (makeDeterminant(LU) == 0)
-    {
-        return [];
-    }
-
-    /*
-     *  逆行列の卵を単位行列の形に初期化
-     *  (単位行列にすることで効率化する)
-     */
-    let B: number[] = new Array(L.length);
-    let C: number[] = new Array(L.length);
-    for (let i = 0; i < N; i++)
-    {
-        for (let j = 0; j < N; j++)
-        {
-            B[i + j * N] = (i == j)? 1 : 0;
-            C[i + j * N] = (i == j)? 1 : 0;
-        }
-    }
-
-    /*
-     *  LC = EとなるC(即ちLの逆行列)を求める
-     */
-    // 左上から、行→列の順に走査
-    for (let j = 0; j < N; j++)
-    {
-        for (let i = j; i < N; i++)
-        {
-            // Uにとって対角行列より右側を既出の値で計算
-            for (let k = j; k < i; k++)
-            {
-                C[j + i * N] -= L[k + i * N] * C[j + k * N];
-            }
-        }
-    }
-
-    /*
-     *  UB = EとなるB(即ちUの逆行列)を求める
-     */
-    // 右下から、行→列の順に走査
-    for (let j = N - 1; 0 <= j; j--)
-    {
-        for (let i = j; 0 <= i; i--)
-        {
-            // Uにとって対角行列より右側を既出の値で計算
-            for (let k = j; i < k; k--)
-            {
-                B[j + i * N] -= U[k + i * N] * B[j + k * N];
-            }
-            // 最後に対角成分で割る
-            B[j + i * N] /= U[i + i * N];
-        }
-    }
-
-    /*
-     * A逆行列をU^(-1)L^(-1)から求める
-     */
-    const rev_UL: number[] = multSquareMatrix (B, C);
-    let rev_A: number[] = [];
-    for (let j = 0; j < LU.pivot.length; j++)
-    {
-        for (let i = 0; i < N; i++)
-        {
-            rev_A[LU.pivot[j] + i * N] = rev_UL[j + i * N];
-        }
-    }
-
-    return rev_A;
-}
-
-// LU分解を行う
-function makeLU (A: number[]) : LU
-{
-    // 行の入れ替え状況を格納する配列
-    let pivot: number[] = [];
-    for (let i = 0; i < N; i++) {
-        pivot[i] = i;
-    }
-    // 入れ替え回数をカウントする配列
-    let pivot_count: number = 0;
-
-    // i行目について扱う
-    for (let i = 0; i < N - 1; i++)
-    {
-        /*
-         * 対角成分が0にならないように行を入れ替え
-         */
-        // i+1行目以下のi列目成分の中で絶対値が最大のものを求める
-        let max_line: number = i;
-        let max_value: number = Math.abs(A[i + i * N]);
-        for (let j = i + 1; j < N; j++)
-        {
-            if (Math.abs(A[i + j * N]) > max_value)
-            {
-                max_line  = j;
-                max_value = Math.abs(A[i + j * N]);
-            }
-        }
-        // 最大が0だったら、i行目以下が全部0ということ（おしり）
-        if (max_value == 0)
-        {
-            continue;
-        }
-        // 最大が0じゃなくて対角成分以上の行があった→行を入れ替える
-        if (i != max_line)
-        {
-            for (let j = 0; j < N; j++)
-            {
-                // 行の入れ替え
-                const tmp: number = A[j + i * N];
-                A[j + i * N] = A[j + max_line * N];
-                A[j + max_line * N] = tmp;
-            }
-            // ピボット配列（入替記録）の更新
-            const tmp: number = pivot[i]
-            pivot[i] = pivot[max_line];
-            pivot[max_line] = tmp;
-            // ピポットカウンターのインクリメント
-            pivot_count++;
-        }
-
-        /*
-         * i行目のの割り算(U作り)
-         */
-        for (let j = i + 1; j < N; j++)
-        {
-            A[i + j * N] /= A[i + i * N];
-        }
-        /*
-         * j行目とi列目で行列を作って余因子から引く
-         */
-        for (let n = i + 1; n < N; n++)
-        {
-            for (let m = i + 1; m < N; m++)
-            {
-                A[m + n * N] -= A[m + i * N] * A[i + n * N];
-            }
-        }
-    }
-
-    // LとUを出す
-    const L: number[] = A.slice();
-    const U: number[] = A.slice();
-    for (let i = 0; i < N; i++)
-    {
-        for (let j = 0; j < N; j++)
-        {
-            if (i < j)
-            {
-                L[j + i * N] = 0;
-            }
-            else if (i > j)
-            {
-                U[j + i * N] = 0;
-            }
-            else
-            {
-                L[j + i * N] = 1;
-            }
-        }
-    }
-
-    let ans: LU = {
-        L: L,
-        U: U,
-        LxU: multSquareMatrix(L, U),
-        pivot: pivot,
-        pivot_count: pivot_count
-    };
-
-    return ans;
-}
-
-
-
-/*
- *  正方行列のかけ算をする（定義できないときはfalse）
- */
-function multSquareMatrix (A: number[], B: number[]) : number[]
-{
-    // AとBの要素数がマッチしない or 正方行列でない
-    if (A.length != B.length || !is_square(A.length))
-    {
-        return [];
-    }
-
-    let AB: number[] = [];
-    let sum: number = 0;
-    for (let i = 0; i < N; i++)
-    {
-        for (let j = 0; j < N; j++)
-        {
-            sum = 0;
-            for (let k = 0; k < N; k++)
-            {
-                sum += A[k + i * N] * B[j + k * N];
-            }
-            AB[j + i * N] = sum;
-        }
-    }
-
-    return AB;
 }
 
 /*

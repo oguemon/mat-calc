@@ -7,6 +7,35 @@ class Mynum {
   constructor (a: number, b:number);
   constructor (a: any, b?:number) {
     if (typeof a == 'string') {
+      // 分数のスラッシュがある
+      if (a.match(/\//)) {
+        let splitted_num: string[] = a.split('/');
+        this.n = Number(splitted_num[0]);
+        this.d = Number(splitted_num[1]);
+        this.reduction();
+        return;
+      } else
+      // 小数のピリオドがある
+      if (a.match(/\./)) {
+        let splitted_num: string[] = a.split('.');
+        let decimal_length: number = splitted_num[1].length
+        let integer_part: number = Math.abs(Number(splitted_num[0])); //絶対値
+        let decimal_part: number = Number(splitted_num[1]);
+
+        this.n = integer_part * Math.pow(10, decimal_length) + decimal_part;
+        this.d = Math.pow(10, decimal_length);
+
+        // マイナス記号があったなら
+        if (splitted_num[0].slice(0, 1) == '-') {
+          this.n *= -1;
+        }
+
+        this.reduction();
+        return;
+      } else {
+        this.n = Number(a);
+        this.d = 1;
+      }
     } else if (typeof a == 'number' && typeof b == 'undefined') {
       this.n = a;
       this.d = 1;

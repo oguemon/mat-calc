@@ -6,7 +6,7 @@
     <title>行列式・逆行列計算機(問題の答え合わせや試験対策に！) byおぐえもん.com</title>
     <link rel="stylesheet" href="./mat-det-inv.css">
 
-    <!-- Google Analytics
+    <!-- Google Analytics-->
     <script type="text/javascript" >
         window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
         ga('create', 'UA-89114839-2', { 'cookieDomain': 'oguemon.com' } );
@@ -15,10 +15,10 @@
         ga('send', 'pageview');
     </script>
     <script async src="https://www.google-analytics.com/analytics.js"></script>
-    -->
-    <!-- Google Adsense
+
+    <!-- Google Adsense -->
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    -->
+
     <!-- OGP設定  -->
     <meta property="og:title" content="行列式・逆行列計算機(問題の答え合わせや試験対策に！)">
     <meta property="og:type" content="article">
@@ -56,6 +56,7 @@
             <div class="container">
                 <!-- 入力フォーム -->
                 <h2>行列の入力</h2>
+                小数と分数の入力に対応！(結果は分数で表示されます)
                 <div id="matrix_input">
                     <input type="text" id="a-0" name="matrix[]" value="0">
                     <input type="text" id="a-1" name="matrix[]" value="0">
@@ -74,11 +75,9 @@
                 <ul>
                     <li>行列サイズは<strong>2×2〜10×10</strong>に対応しています！</li>
                     <li>成分毎の入力窓をスムーズに行き来できるキーがPC/SP共に用意されてるので探してみてね（PCだとTabキー）</li>
-                    <li>入出力は<strong>整数or小数</strong>で行われます。分数やルートには対応していません…</li>
-                    <li>↑少なくとも分数には今後対応したいです（・3・）</li>
-                    <li>計算結果は<strong>小数をある程度の桁で四捨五入して丸めています</strong>。表示する桁数は以下で設定可能です。</li>
-                    <li>当計算機はLU分解というものを利用して行列式と逆行列を求値しています。</li>
-                    <li>算出アルゴリズムの都合上、複雑な行列を与えた場合に本来行列式が0なのに超微小な数値を導出してしまい、存在しない逆行列を導出する場合があるのでご了承願います（これは小数計算の限界に近い話で、基本的に正しい答えを返します）。</li>
+                    <li>入出力は<strong>整数or小数or分数</strong>で行われます。ルートには対応していません…</li>
+                    <li>計算結果は<strong>分数で表現されます</strong>。小数の結果が欲しい方は電卓を叩いてください。</li>
+                    <li>当計算機は掃き出し法というものを利用して行列式と逆行列を求値しています。</li>
                     <li><strong>その他の不具合やご要望などがございましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</strong></li>
                     <li>当ページ下部にある免責事項等をお読みになった上でご利用願います。</li>
                 </ul>
@@ -88,17 +87,6 @@
                     <input type="checkbox" checked id="drill">
                     <span class="checkbox">計算ドリルモード<br><small>(実際に解いて答えを確かめよう！)</small></span>
                 </label>
-                <!-- 結果の小数表示 -->
-                <select id="show_digit">
-                    <option value="0">結果を整数で表示</option>
-                    <option value="1">結果を小数第1位まで表示</option>
-                    <option value="2">結果を小数第2位まで表示</option>
-                    <option value="3" selected>結果を小数第3位まで表示</option>
-                    <option value="4">結果を小数第4位まで表示</option>
-                    <option value="5">結果を小数第5位まで表示</option>
-                    <option value="6">結果を小数第6位まで表示</option>
-                    <option value="7">結果を小数第7位まで表示</option>
-                </select>
                 <!-- いろんなボタン -->
                 <div id="button_box">
                     <input type="button" id="dim_add" value="次元＋">
@@ -124,13 +112,11 @@
                 <h2 id="headline_result">結果の表示</h2>
                 <div id="result">
                     <div id="matrix_A">「逆行列を計算」ボタンを押してください！</div>
+                    <div id="matrix_triA"></div>
+                    <div id="matrix_rankA"></div>
                     <div id="matrix_detA"></div>
                     <div id="matrix_revA"></div>
-                    <div id="matrix_rankedA"></div>
-                    <input type="button" id="state_first" value="はじめに戻る">
-                    <input type="button" id="state_prev" value="戻る">
-                    <input type="button" id="state_next" value="進む">
-                    <input type="button" id="state_last" value="最終結果">
+                    <div id="matrix_checkE"></div>
                 </div>
 
                 <!-- Google Adsense広告（サイドバー（PC）） -->

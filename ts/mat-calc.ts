@@ -48,9 +48,9 @@ namespace Mat {
   }
 
   /*
-   *  行列のかけ算をする（定義できないときはfalse）
+   *  行列のかけ算をする（定義できないときはnull）
    */
-  function mul (A: Mat, B: Mat) : Mat | null
+  export function mul (A: Mat, B: Mat) : Mat | null
   {
       // 掛け算が定義できない
       if (A.rows != B.lines)
@@ -61,23 +61,41 @@ namespace Mat {
       let AB: Mat = {
         lines: A.lines,
         rows: B.rows,
-        val: []
+        val: Array()
       };
 
-      let sum: Mynum;
-      for (let i = 0; i < N; i++)
+      for (let i = 0; i < A.lines; i++)
       {
-          for (let j = 0; j < N; j++)
-          {
-              sum = new Mynum(0);
-              for (let k = 0; k < N; k++)
-              {
-                sum = Mynum.add(sum, Mynum.mul(A.val[i][k], B.val[k][j]));
-              }
-              AB.val[i][j] = sum;
-          }
+        AB.val[i] = Array();
+        for (let j = 0; j < B.rows; j++)
+        {
+            let sum = new Mynum(0);
+            for (let k = 0; k < A.rows; k++)
+            {
+            sum = Mynum.add(sum, Mynum.mul(A.val[i][k], B.val[k][j]));
+            }
+            AB.val[i][j] = sum;
+        }
       }
 
       return AB;
   }
+   /*
+    *  行列をmathjaxで出力（新バージョン・値を丸めない）
+    */
+    export function toMathJax(matrix: Mat.Mat, name: string) : string
+    {
+        let string: string = '$$' + name + ' = \\left(\\begin{array}{ccc}';
+        for (let i = 0; i < matrix.lines; i++)
+        {
+            for (let j = 0; j < matrix.rows; j++)
+            {
+                string += matrix.val[i][j].toLatex() + ' & ';
+            }
+            string += '\\\\';
+        }
+        string += '\\end{array}\\right)$$';
+
+        return string;
+    }
 }

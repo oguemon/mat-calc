@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+$main_color: #00A5DE;
+$border_color: #ddd;
+$white_color: #fff;
+
 /*
  *  汎用パーツ
  */
@@ -28,14 +32,14 @@ img {
 h2 {
     margin: 0 0 10px 0;
     padding: 5px 10px;
-    color: #ffffff;
+    color: $white_color;
     font-weight: bold;
-    background: #00A5DE;
+    background: $main_color;
 }
 h3 {
     margin: 5px 0 0 0;
     font-weight: bold;
-    border-bottom: 2px solid #00A5DE;
+    border-bottom: 2px solid $main_color;
 }
 ul {
     margin: 0;
@@ -55,21 +59,29 @@ li {
  */
 #header {
     height: 60px;
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid $border_color;
     position: relative;
 }
 #logo {
-    width: 280px;
+    width: 300px;
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
+}
+@media screen and (max-width:360px) {
+    #logo {
+        width: 240px;
+        position: absolute;
+        top: 6px;
+        left: 0;
+    }
 }
 #twitter {
     width: 60px;
     height: 60px;
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
 }
 
 /*
@@ -80,7 +92,7 @@ li {
 }
 .container {
     padding: 20px;
-    background: #ffffff;
+    background: $white_color;
 }
 /*
  *  フォーム
@@ -93,8 +105,8 @@ input[type="text"] {
     font-size: 100%;
     text-align: center;
     line-height: 150%;
-    background: #ffffff;
-    border: 1px solid #dddddd;
+    background: $white_color;
+    border: 1px solid $border_color;
     border-radius: 3px;
     display: inline-block;
 }
@@ -111,30 +123,31 @@ input[type=checkbox]:checked + .checkbox:before {
     width: 100%;
     margin: 5px 0 0 0;
     padding: 5px 10px 5px 42px;
-    border: 1px solid #dddddd;
+    border: 1px solid $border_color;
     border-radius: 5px;
     vertical-align: middle;
     cursor: pointer;
     position: relative;
     display: inline-block;
-}
-.checkbox:before {
-    -webkit-transition: opacity 0.1s linear;
-    transition: opacity 0.1s linear;
-    position: absolute;
-    top: 50%;
-    left: 21px;
-    display: block;
-    margin-top: -7px;
-    width: 5px;
-    height: 9px;
-    border-right: 3px solid #53b300;
-    border-bottom: 3px solid #53b300;
-    content: '';
-    opacity: 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
+
+    &:before {
+        -webkit-transition: opacity 0.1s linear;
+        transition: opacity 0.1s linear;
+        position: absolute;
+        top: 50%;
+        left: 21px;
+        display: block;
+        margin-top: -7px;
+        width: 5px;
+        height: 9px;
+        border-right: 3px solid #53b300;
+        border-bottom: 3px solid #53b300;
+        content: '';
+        opacity: 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
 }
 select {
     max-width: 360px;
@@ -142,11 +155,12 @@ select {
     margin: 10px 0;
     padding: 5px 10px;
     font-size: 100%;
-    background: #ffffff;
-    border: 1px solid #dddddd;
-}
-select#show_digit {
-    display: block;
+    background: $white_color;
+    border: 1px solid $border_color;
+
+    &#show_digit {
+        display: block;
+    }
 }
 
 input[type="button"] {
@@ -156,17 +170,18 @@ input[type="button"] {
     padding: 0 10px;
     font-size: 100%;
     text-align: center;
-    background: #eeeeee;
+    background: #f0f0f0;
     line-height: 150%;
-    border: 1px solid #cccccc;
+    border: 1px solid $border_color;
     border-radius: 3px;
     display: inline-block;
-}
-input[type="button"]#calc{
-    color: #ffffff;
-    font-weight: bold;
-    background: #00A5DE;
-    border: none;
+
+    &#calc{
+        color: $white_color;
+        font-weight: bold;
+        background: $main_color;
+        border: none;
+    }
 }
 
 /*
@@ -176,8 +191,8 @@ input[type="button"]#calc{
     margin: 10px 0 5px 0;
     padding: 5px 0;
     text-align: center;
-    border-top: 1px solid #dddddd;
-    border-bottom: 1px solid #dddddd;
+    border-top: 1px solid $border_color;
+    border-bottom: 1px solid $border_color;
     display: block;
 }
 #input_attention {
@@ -198,7 +213,7 @@ input[type="button"]#calc{
 #result {
     margin: 15px 0 10px 0;
     padding: 0 0 20px 0;
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid $border_color;
 }
 #result em {
     margin: 15px;
@@ -222,21 +237,24 @@ input[type="button"]#calc{
     border: 1px solid #ff9999;
     background: #fffefe;
     clear: both;
-}
-#pay-attention .title{
-    text-align: center;
-    color: #EB040D;
-    font-weight: bold;
-    border-bottom: 3px solid #ffdddd;
-}
-#pay-attention .list{
-    margin: 15px 0 0 0;
-    padding: 0 0 0 20px;
-}
-#pay-attention .list li{
-    margin: 5px 0;
-    padding: 0;
-    font-size: 80%;
+
+    .title{
+        text-align: center;
+        color: #EB040D;
+        font-weight: bold;
+        border-bottom: 3px solid #ffdddd;
+    }
+
+    .list{
+        margin: 15px 0 0 0;
+        padding: 0 0 0 20px;
+
+        li{
+            margin: 5px 0;
+            padding: 0;
+            font-size: 80%;
+        }
+    }
 }
 
 /*
@@ -245,7 +263,7 @@ input[type="button"]#calc{
  #footer {
     padding: 10px 0;
     background: #14171A;
-    color: #ffffff;
+    color: $white_color;
     font-size: 80%;
     text-align: center;
 }
