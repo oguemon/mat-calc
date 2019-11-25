@@ -82,6 +82,7 @@ $('#calc').on('click', function ()
     const row: number = N;
     let rank: number = 0;
     let swap_count: number = 0;
+    let step_count: number = 0;
     let A: Mat.Mat = {
         lines : line,
         rows: row,
@@ -92,27 +93,21 @@ $('#calc').on('click', function ()
         rows: row,
         val: new Array()
     };
-    let inputA: Mat.Mat = {
-        lines : line,
-        rows: row,
-        val: new Array()
-    };
+    let inputA: Mat.Mat;
+    let stepsA: Mat.Mat[] = new Array();
 
     // 行列の入力（A）
     let input_error: boolean = false;
     for (let i = 0; i < A.lines; i++)
     {
         A.val[i] = new Array();
-        inputA.val[i] = new Array();
         for (let j = 0; j < A.rows; j++)
         {
             const ele: JQuery<HTMLElement> = $('#a-' + String(i * A.rows + j));
             const tmp_value: string = String(ele.val());
             if (isNumber(tmp_value))
             {
-                console.log(tmp_value);
                 A.val[i][j] = new Mynum(tmp_value);
-                inputA.val[i][j] = new Mynum(tmp_value);
                 ele.css('border', '1px solid #dddddd');
             }
             else
@@ -122,6 +117,11 @@ $('#calc').on('click', function ()
             }
         }
     }
+
+    // 入力した行列を格納
+    inputA = $.extend(true, {}, A);
+    stepsA[step_count] = $.extend(true, {}, A);
+
     $('#error_msg_box').html('');
     if (input_error)
     {
@@ -148,10 +148,12 @@ $('#calc').on('click', function ()
             for (let i = rank + 1; i < line; i++) {
                 // 非零成分と出会ったら
                 if (A.val[i][j].isZero() == false) {
+                    swap_count++;
+                    step_count++;
                     Mat.swap2Lines(A, rank, i);
                     Mat.swap2Lines(B, rank, i);
+                    stepsA[step_count] = $.extend(true, {}, A);
                     found_nonzero = true;
-                    swap_count++;
                     break;
                 }
             }
@@ -166,15 +168,19 @@ $('#calc').on('click', function ()
         for (let i = rank + 1; i < line; i++) {
             // 成分がゼロ以外なら加算して成分をゼロ化
             if (A.val[i][j].isZero() == false) {
+                step_count++;
                 const mlt: Mynum = Mynum.mul(new Mynum(-1), Mynum.div(A.val[i][j], A.val[rank][j]));
                 Mat.addMulLineByScalar(A, rank, mlt, i);
                 Mat.addMulLineByScalar(B, rank, mlt, i);
+                stepsA[step_count] = $.extend(true, {}, A);
             }
         }
 
         // 階数を上げる
         rank++;
     }
+
+    console.log('step: ' + step_count);
 
     // 対角成分の積に基づいて行列式を求める
     let detA: Mynum = (swap_count % 2 == 0) ? new Mynum(1) : new Mynum(-1);
@@ -187,9 +193,41 @@ $('#calc').on('click', function ()
     ele_matrix_inputA.html('<h3>入力した行列</h3>' + Mat.toMathJax(inputA, 'A'));
     MathJax.Hub.Typeset(ele_matrix_inputA[0], function(){});
 
+    let ele_matrix_triA_html: string = '<h3>三角化</h3>' + Mat.toMathJax(A, 'A');
     const ele_matrix_triA: JQuery<HTMLElement> = $('#matrix_triA');
-    ele_matrix_triA.html('<h3>三角化</h3>' + Mat.toMathJax(A, 'A'));
+    ele_matrix_triA.html(ele_matrix_triA_html);
+    // これにより「計算スタート」を複数回押すと無限増殖するため後に改良予定
+    ele_matrix_triA.after('<button id="triA-start">START</button>'
+                        + '<button id="triA-prev">PREV</button>'
+                        + '<button id="triA-next">NEXT</button>'
+                        + '<button id="triA-end">END</button>');
     MathJax.Hub.Typeset(ele_matrix_triA[0], function(){});
+
+    let triA_showing_index: number = 0;
+    $('#triA-start').on('click', function(){
+        triA_showing_index = 0;
+        showMatrixTriA(triA_showing_index);
+    });
+    $('#triA-prev').on('click', function(){
+        triA_showing_index = Math.max(triA_showing_index - 1, 0);
+        showMatrixTriA(triA_showing_index);
+    });
+    $('#triA-next').on('click', function(){
+        triA_showing_index = Math.min(triA_showing_index + 1, step_count);
+        showMatrixTriA(triA_showing_index);
+    });
+    $('#triA-end').on('click', function(){
+        triA_showing_index = step_count;
+        showMatrixTriA(triA_showing_index);
+    });
+
+    // 三角化の結果を表示
+    function showMatrixTriA(triA_showing_index: number) {
+        ele_matrix_triA_html = '<h3>三角化</h3>' + Mat.toMathJax(stepsA[triA_showing_index], 'A');
+        ele_matrix_triA.html(ele_matrix_triA_html);
+        MathJax.Hub.Typeset(ele_matrix_triA[0], function(){});
+        console.log(triA_showing_index);
+    }
 
     const ele_matrix_rankA: JQuery<HTMLElement> = $('#matrix_rankA');
     ele_matrix_rankA.html('$$rankA = ' + rank + '$$');
