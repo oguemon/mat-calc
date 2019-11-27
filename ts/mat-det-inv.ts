@@ -94,7 +94,13 @@ $('#calc').on('click', function ()
         val: new Array()
     };
     let inputA: Mat.Mat;
-    let stepsA: Mat.Mat[] = new Array();
+    let stepsA: {
+        result : Mat.Mat,
+        line1 : number,
+        line2 : number,
+        multipulator : Mynum,
+        is_swap : boolean
+    }[] = new Array();
 
     // 行列の入力（A）
     let input_error: boolean = false;
@@ -120,7 +126,13 @@ $('#calc').on('click', function ()
 
     // 入力した行列を格納
     inputA = $.extend(true, {}, A);
-    stepsA[step_count] = $.extend(true, {}, A);
+    stepsA[step_count] = {
+        result: $.extend(true, {}, A),
+        line1: -1,
+        line2: -1,
+        multipulator: new Mynum('0'),
+        is_swap: false
+    };
 
     $('#error_msg_box').html('');
     if (input_error)
@@ -152,7 +164,13 @@ $('#calc').on('click', function ()
                     step_count++;
                     Mat.swap2Lines(A, rank, i);
                     Mat.swap2Lines(B, rank, i);
-                    stepsA[step_count] = $.extend(true, {}, A);
+                    stepsA[step_count] = {
+                        result: $.extend(true, {}, A),
+                        line1: i,
+                        line2: rank,
+                        multipulator: new Mynum('0'),
+                        is_swap: true
+                    };
                     found_nonzero = true;
                     break;
                 }
@@ -172,7 +190,13 @@ $('#calc').on('click', function ()
                 const mlt: Mynum = Mynum.mul(new Mynum(-1), Mynum.div(A.val[i][j], A.val[rank][j]));
                 Mat.addMulLineByScalar(A, rank, mlt, i);
                 Mat.addMulLineByScalar(B, rank, mlt, i);
-                stepsA[step_count] = $.extend(true, {}, A);
+                stepsA[step_count] = {
+                    result: $.extend(true, {}, A),
+                    line1: i,
+                    line2: rank,
+                    multipulator: $.extend(true, {}, mlt),
+                    is_swap: false
+                };
             }
         }
 
@@ -200,6 +224,7 @@ $('#calc').on('click', function ()
     ele_matrix_inputA_headline.html('<h3>三角化</h3>');
     ele_matrix_inputA_result.html(Mat.toMathJax(A, 'A'));
     MathJax.Hub.Typeset(ele_matrix_inputA_result[0], function(){});
+    ele_matrix_inputA_operation.html('');
     ele_matrix_inputA_button_line.html('<button id="triA-start">START</button>'
                                         + '<button id="triA-prev">PREV</button>'
                                         + '<button id="triA-next">NEXT</button>'
@@ -225,8 +250,23 @@ $('#calc').on('click', function ()
 
     // 三角化の結果を表示
     function showMatrixTriA(triA_showing_index: number) {
-        ele_matrix_inputA_result.html(Mat.toMathJax(stepsA[triA_showing_index], 'A'));
+        ele_matrix_inputA_result.html(Mat.toMathJax(stepsA[triA_showing_index].result, 'A'));
         MathJax.Hub.Typeset(ele_matrix_inputA_result[0], function(){});
+
+        // 初期状態に対しては操作内容の表示がないため自然数のみ対象
+        if (triA_showing_index > 0) {
+            const line1: number = stepsA[triA_showing_index].line1 + 1;
+            const line2: number = stepsA[triA_showing_index].line2 + 1;
+            if (stepsA[triA_showing_index].is_swap == true) {
+                ele_matrix_inputA_operation.html(line1 + '行目と' + line2 + '行目を入れ替え');
+            } else {
+                // 倍数が曖昧なまま
+                ele_matrix_inputA_operation.html(line1 + '行目に' + line2 + '行目のn倍を加算');
+            }
+        } else {
+            ele_matrix_inputA_operation.html('');
+        }
+
         console.log(triA_showing_index);
     }
 
