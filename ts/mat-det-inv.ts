@@ -257,11 +257,13 @@ $('#calc').on('click', function ()
         if (triA_showing_index > 0) {
             const line1: number = stepsA[triA_showing_index].line1 + 1;
             const line2: number = stepsA[triA_showing_index].line2 + 1;
+            const multipulator_latex: string = Mynum.toLatex(stepsA[triA_showing_index].multipulator);
             if (stepsA[triA_showing_index].is_swap == true) {
                 ele_matrix_inputA_operation.html(line1 + '行目と' + line2 + '行目を入れ替え');
             } else {
                 // 倍数が曖昧なまま
-                ele_matrix_inputA_operation.html(line1 + '行目に' + line2 + '行目のn倍を加算');
+                ele_matrix_inputA_operation.html(line1 + '行目に' + line2 + '行目の\\(' + multipulator_latex + '\\)倍を加算');
+                MathJax.Hub.Typeset(ele_matrix_inputA_operation[0], function(){});
             }
         } else {
             ele_matrix_inputA_operation.html('');
@@ -276,7 +278,7 @@ $('#calc').on('click', function ()
 
 
     const ele_matrix_detA: JQuery<HTMLElement> = $('#matrix_detA');
-    ele_matrix_detA.html('<h3>行列式</h3>' + '$$|A|=' + detA.toLatex() + '$$');
+    ele_matrix_detA.html('<h3>行列式</h3>' + '$$|A|=' + Mynum.toLatex(detA) + '$$');
     MathJax.Hub.Typeset(ele_matrix_detA[0], function(){});
 
     const ele_matrix_revA: JQuery<HTMLElement> = $('#matrix_revA');
