@@ -90,7 +90,7 @@ namespace Mat {
         {
             for (let j = 0; j < matrix.rows; j++)
             {
-                string += matrix.val[i][j].toLatex() + ' & ';
+                string += Mynum.toLatex(matrix.val[i][j]) + ' & ';
             }
             string += '\\\\';
         }

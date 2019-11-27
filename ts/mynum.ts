@@ -111,17 +111,17 @@ class Mynum {
     return (this.n == 0);
   }
 
-  public toLatex (): string {
+  static toLatex (a: Mynum): string {
     let str: string;
 
-    if (this.d == 1)
+    if (a.d == 1)
     {
-      str = String(this.n);
+      str = String(a.n);
     }
     else
     {
-      const sign = (this.n * this.d < 0)? '-' : '';
-      str = sign + '\\frac{' + Math.abs(this.n) + '}{' + Math.abs(this.d) + '}';
+      const sign = (a.n * a.d < 0)? '-' : '';
+      str = sign + '\\frac{' + Math.abs(a.n) + '}{' + Math.abs(a.d) + '}';
     }
 
     return str;
