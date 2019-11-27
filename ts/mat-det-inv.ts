@@ -193,17 +193,19 @@ $('#calc').on('click', function ()
     ele_matrix_inputA.html('<h3>入力した行列</h3>' + Mat.toMathJax(inputA, 'A'));
     MathJax.Hub.Typeset(ele_matrix_inputA[0], function(){});
 
-    let ele_matrix_triA_html: string = '<h3>三角化</h3>' + Mat.toMathJax(A, 'A');
-    const ele_matrix_triA: JQuery<HTMLElement> = $('#matrix_triA');
-    ele_matrix_triA.html(ele_matrix_triA_html);
-    // これにより「計算スタート」を複数回押すと無限増殖するため後に改良予定
-    ele_matrix_triA.after('<button id="triA-start">START</button>'
-                        + '<button id="triA-prev">PREV</button>'
-                        + '<button id="triA-next">NEXT</button>'
-                        + '<button id="triA-end">END</button>');
-    MathJax.Hub.Typeset(ele_matrix_triA[0], function(){});
+    const ele_matrix_inputA_headline: JQuery<HTMLElement> = $('#matrix_triA_headline');
+    const ele_matrix_inputA_result: JQuery<HTMLElement> = $('#matrix_triA_result');
+    const ele_matrix_inputA_operation: JQuery<HTMLElement> = $('#matrix_triA_operation');
+    const ele_matrix_inputA_button_line: JQuery<HTMLElement> = $('#matrix_triA_button_line');
+    ele_matrix_inputA_headline.html('<h3>三角化</h3>');
+    ele_matrix_inputA_result.html(Mat.toMathJax(A, 'A'));
+    MathJax.Hub.Typeset(ele_matrix_inputA_result[0], function(){});
+    ele_matrix_inputA_button_line.html('<button id="triA-start">START</button>'
+                                        + '<button id="triA-prev">PREV</button>'
+                                        + '<button id="triA-next">NEXT</button>'
+                                        + '<button id="triA-end">END</button>');
 
-    let triA_showing_index: number = 0;
+    let triA_showing_index: number = step_count;
     $('#triA-start').on('click', function(){
         triA_showing_index = 0;
         showMatrixTriA(triA_showing_index);
@@ -223,9 +225,8 @@ $('#calc').on('click', function ()
 
     // 三角化の結果を表示
     function showMatrixTriA(triA_showing_index: number) {
-        ele_matrix_triA_html = '<h3>三角化</h3>' + Mat.toMathJax(stepsA[triA_showing_index], 'A');
-        ele_matrix_triA.html(ele_matrix_triA_html);
-        MathJax.Hub.Typeset(ele_matrix_triA[0], function(){});
+        ele_matrix_inputA_result.html(Mat.toMathJax(stepsA[triA_showing_index], 'A'));
+        MathJax.Hub.Typeset(ele_matrix_inputA_result[0], function(){});
         console.log(triA_showing_index);
     }
 
