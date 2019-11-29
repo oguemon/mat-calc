@@ -90,9 +90,14 @@ namespace Mat {
         {
             for (let j = 0; j < matrix.rows; j++)
             {
-                string += Mynum.toLatex(matrix.val[i][j]) + ' & ';
+                string += Mynum.toLatex(matrix.val[i][j]);
+                if (j < matrix.rows - 1) {
+                    string += '&';
+                }
             }
-            string += '\\\\';
+            if (i < matrix.lines - 1) {
+                string += '\\\\';
+            }
         }
         string += '\\end{array}\\right)$$';
 
