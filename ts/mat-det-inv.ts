@@ -67,6 +67,10 @@ $('#reset').on('click', function ()
     {
         updateInputForm ();
     }
+
+    // 結果をスライド非表示にする
+    $('#result').slideUp();
+
     return;
 });
 
@@ -214,14 +218,12 @@ $('#calc').on('click', function ()
 
     // 結果の表示
     const ele_matrix_inputA: JQuery<HTMLElement> = $('#matrix_A');
-    ele_matrix_inputA.html('<h3>入力した行列</h3>' + Mat.toMathJax(inputA, 'A'));
+    ele_matrix_inputA.html(Mat.toMathJax(inputA, 'A'));
     MathJax.Hub.Typeset(ele_matrix_inputA[0], function(){});
 
-    const ele_matrix_inputA_headline: JQuery<HTMLElement> = $('#matrix_triA_headline');
     const ele_matrix_inputA_result: JQuery<HTMLElement> = $('#matrix_triA_result');
     const ele_matrix_inputA_operation: JQuery<HTMLElement> = $('#matrix_triA_operation');
     const ele_matrix_inputA_button_line: JQuery<HTMLElement> = $('#matrix_triA_button_line');
-    ele_matrix_inputA_headline.html('<h3>三角化</h3>');
     ele_matrix_inputA_result.html(Mat.toMathJax(A, 'A'));
     MathJax.Hub.Typeset(ele_matrix_inputA_result[0], function(){});
     ele_matrix_inputA_operation.html('');
@@ -261,7 +263,6 @@ $('#calc').on('click', function ()
             if (stepsA[triA_showing_index].is_swap == true) {
                 ele_matrix_inputA_operation.html(line1 + '行目と' + line2 + '行目を入れ替え');
             } else {
-                // 倍数が曖昧なまま
                 ele_matrix_inputA_operation.html(line1 + '行目に' + line2 + '行目の\\(' + multipulator_latex + '\\)倍を加算');
                 MathJax.Hub.Typeset(ele_matrix_inputA_operation[0], function(){});
             }
@@ -278,11 +279,10 @@ $('#calc').on('click', function ()
 
 
     const ele_matrix_detA: JQuery<HTMLElement> = $('#matrix_detA');
-    ele_matrix_detA.html('<h3>行列式</h3>' + '$$|A|=' + Mynum.toLatex(detA) + '$$');
+    ele_matrix_detA.html('$$|A|=' + Mynum.toLatex(detA) + '$$');
     MathJax.Hub.Typeset(ele_matrix_detA[0], function(){});
 
     const ele_matrix_revA: JQuery<HTMLElement> = $('#matrix_revA');
-    ele_matrix_revA.html('<h3>逆行列</h3>');
     // 正方行列の次数と階数が同じなら逆行列を求める
     if (N == rank) {
         // 単位行列化
@@ -304,7 +304,7 @@ $('#calc').on('click', function ()
         }
 
         // 結果の表示
-        ele_matrix_revA.append(Mat.toMathJax(B, 'A^{-1}'));
+        ele_matrix_revA.html(Mat.toMathJax(B, 'A^{-1}'));
         MathJax.Hub.Typeset(ele_matrix_revA[0], function(){});
 
         // 掛け算して単位行列になるかチェック
@@ -318,11 +318,14 @@ $('#calc').on('click', function ()
         */
     } else {
         // 逆行列がない旨の表示
-        ele_matrix_revA.append('逆行列はありません（階数と正方行列の次数が異なるから）');
+        ele_matrix_revA.html('逆行列はありません（階数と正方行列の次数が異なるから）');
     }
 
+    // 結果をスライド表示する
+    $('#result').slideDown();
+
     // 移動先を数値で取得(ゆとり分だけ引く)
-    const headline_result_offset: JQuery.Coordinates | undefined = $('#headline_result').offset();
+    const headline_result_offset: JQuery.Coordinates | undefined = $('#result').offset();
     const position: number = (headline_result_offset != undefined)? headline_result_offset.top - 10 : 0;
     // スムーススクロール
     $('body,html').animate({scrollTop:position}, 400, 'swing');

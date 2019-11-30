@@ -88,11 +88,15 @@ li {
  *  メインコンテンツ
  */
  #main-contents {
+    padding: 10px;
     background: #f8f8f8;
 }
-.container {
+.info-panel {
+    margin-bottom: 15px;
     padding: 20px;
     background: $white_color;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px rgba(0,0,0,0.15);
 }
 /*
  *  フォーム
@@ -211,9 +215,7 @@ input[type="button"] {
     margin: 0 0 15px 0;
 }
 #result {
-    margin: 15px 0 10px 0;
-    padding: 0 0 20px 0;
-    border-bottom: 1px solid $border_color;
+    display: none;
 }
 #result em {
     margin: 15px;

@@ -54,47 +54,49 @@
     <div id="main-contents">
         <div class="wrapper">
             <div class="container">
-                <!-- 入力フォーム -->
-                <h2>行列の入力</h2>
-                小数と分数の入力に対応！(結果は分数で表示されます)
-                <div id="matrix_input">
-                    <input type="text" id="a-0" name="matrix[]" value="0">
-                    <input type="text" id="a-1" name="matrix[]" value="0">
-                    <input type="text" id="a-2" name="matrix[]" value="0"><br>
-                    <input type="text" id="a-3" name="matrix[]" value="0">
-                    <input type="text" id="a-4" name="matrix[]" value="0">
-                    <input type="text" id="a-5" name="matrix[]" value="0"><br>
-                    <input type="text" id="a-6" name="matrix[]" value="0">
-                    <input type="text" id="a-7" name="matrix[]" value="0">
-                    <input type="text" id="a-8" name="matrix[]" value="0">
-                </div>
+                <div class="info-panel">
+                    <!-- 入力フォーム -->
+                    <h2>行列の入力</h2>
+                    小数と分数の入力に対応！(結果は分数で表示されます)
+                    <div id="matrix_input">
+                        <input type="text" id="a-0" name="matrix[]" value="0">
+                        <input type="text" id="a-1" name="matrix[]" value="0">
+                        <input type="text" id="a-2" name="matrix[]" value="0"><br>
+                        <input type="text" id="a-3" name="matrix[]" value="0">
+                        <input type="text" id="a-4" name="matrix[]" value="0">
+                        <input type="text" id="a-5" name="matrix[]" value="0"><br>
+                        <input type="text" id="a-6" name="matrix[]" value="0">
+                        <input type="text" id="a-7" name="matrix[]" value="0">
+                        <input type="text" id="a-8" name="matrix[]" value="0">
+                    </div>
 
-                <!-- 注意事項 -->
-                <a id="input_attention_btn">▼入力時の注意事項を開く</a>
-                <div id="input_attention">
-                <ul>
-                    <li>行列サイズは<strong>2×2〜10×10</strong>に対応しています！</li>
-                    <li>成分毎の入力窓をスムーズに行き来できるキーがPC/SP共に用意されてるので探してみてね（PCだとTabキー）</li>
-                    <li>入出力は<strong>整数or小数or分数</strong>で行われます。ルートには対応していません…</li>
-                    <li>計算結果は<strong>分数で表現されます</strong>。小数の結果が欲しい方は電卓を叩いてください。</li>
-                    <li>当計算機は掃き出し法というものを利用して行列式と逆行列を求値しています。</li>
-                    <li><strong>その他の不具合やご要望などがございましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</strong></li>
-                    <li>当ページ下部にある免責事項等をお読みになった上でご利用願います。</li>
-                </ul>
+                    <!-- 注意事項 -->
+                    <a id="input_attention_btn">▼入力時の注意事項を開く</a>
+                    <div id="input_attention">
+                    <ul>
+                        <li>行列サイズは<strong>2×2〜10×10</strong>に対応しています！</li>
+                        <li>成分毎の入力窓をスムーズに行き来できるキーがPC/SP共に用意されてるので探してみてね（PCだとTabキー）</li>
+                        <li>入出力は<strong>整数or小数or分数</strong>で行われます。ルートには対応していません…</li>
+                        <li>計算結果は<strong>分数で表現されます</strong>。小数の結果が欲しい方は電卓を叩いてください。</li>
+                        <li>当計算機は掃き出し法というものを利用して行列式と逆行列を求値しています。</li>
+                        <li><strong>その他の不具合やご要望などがございましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</strong></li>
+                        <li>当ページ下部にある免責事項等をお読みになった上でご利用願います。</li>
+                    </ul>
+                    </div>
+                    <!-- 計算ドリルモード -->
+                    <label>
+                        <input type="checkbox" checked id="drill">
+                        <span class="checkbox">計算ドリルモード<br><small>(実際に解いて答えを確かめよう！)</small></span>
+                    </label>
+                    <!-- いろんなボタン -->
+                    <div id="button_box">
+                        <input type="button" id="dim_add" value="次元＋">
+                        <input type="button" id="dim_dec" value="次元ー">
+                        <input type="button" id="reset" value="リセット">
+                        <input type="button" id="calc" value="計算スタート">
+                    </div>
+                    <div id="error_msg_box"></div>
                 </div>
-                <!-- 計算ドリルモード -->
-                <label>
-                    <input type="checkbox" checked id="drill">
-                    <span class="checkbox">計算ドリルモード<br><small>(実際に解いて答えを確かめよう！)</small></span>
-                </label>
-                <!-- いろんなボタン -->
-                <div id="button_box">
-                    <input type="button" id="dim_add" value="次元＋">
-                    <input type="button" id="dim_dec" value="次元ー">
-                    <input type="button" id="reset" value="リセット">
-                    <input type="button" id="calc" value="計算スタート">
-                </div>
-                <div id="error_msg_box"></div>
 
                 <!-- Google Adsense広告（Webサービス入力下部） -->
                 <div class="google_ad">
@@ -109,19 +111,37 @@
                 </div>
 
                 <!-- 結果表示 -->
-                <h2 id="headline_result">結果の表示</h2>
                 <div id="result">
-                    <div id="matrix_A">「逆行列を計算」ボタンを押してください！</div>
-                    <div id="matrix_triA">
-                        <div id="matrix_triA_headline"></div>
-                        <div id="matrix_triA_result"></div>
-                        <div id="matrix_triA_operation"></div>
-                        <div id="matrix_triA_button_line"></div>
+                    <div class="info-panel">
+                        <h2>入力した行列</h2>
+                        <div id="matrix_A"></div>
                     </div>
-                    <div id="matrix_rankA"></div>
-                    <div id="matrix_detA"></div>
-                    <div id="matrix_revA"></div>
-                    <div id="matrix_checkE"></div>
+                    <div class="info-panel">
+                        <div id="matrix_triA">
+                            <h2>三角化</h2>
+                            <div id="matrix_triA_result"></div>
+                            <div id="matrix_triA_operation"></div>
+                            <div id="matrix_triA_button_line"></div>
+                        </div>
+                    </div>
+                    <div class="info-panel">
+                        <h2>階数</h2>
+                        <div id="matrix_rankA"></div>
+                    </div>
+                    <div class="info-panel">
+                        <h2>行列式</h2>
+                        <div id="matrix_detA"></div>
+                    </div>
+                    <div class="info-panel">
+                        <h2>逆行列</h2>
+                        <div id="matrix_revA"></div>
+                    </div>
+                    <!--
+                    <div class="info-panel">
+                        <h2></h2>
+                        <div id="matrix_checkE"></div>
+                    </div>
+                    -->
                 </div>
 
                 <!-- Google Adsense広告（サイドバー（PC）） -->
