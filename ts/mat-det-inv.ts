@@ -270,20 +270,20 @@ $('#calc').on('click', function ()
                 ele_matrix_triA_operation_content.html(line1 + '行目に' + line2 + '行目の\\(' + multipulator_latex + '\\)倍を加算');
                 MathJax.Hub.Typeset(ele_matrix_triA_operation_content[0], function(){});
             }
-
-            // 最終行なら
-            if (triA_showing_index == step_count) {
-                $('#matrix_triA .status').addClass('transparent')
-                ele_matrix_triA_operation_content.append('→<strong>完成</strong>');
-                ele_matrix_triA_operation_step.addClass('complete');
-                $('#triA-next').prop('disabled', true);
-                $('#triA-end').prop('disabled', true);
-            }
         } else {
             ele_matrix_triA_operation_content.html('初期状態（入力された行列）');
             $('#triA-start').prop('disabled', true);
             $('#triA-prev').prop('disabled', true);
 
+        }
+
+        // 最終ステップなら
+        if (triA_showing_index == step_count) {
+            $('#matrix_triA .status').addClass('transparent')
+            ele_matrix_triA_operation_content.append('→<strong>完成</strong>');
+            ele_matrix_triA_operation_step.addClass('complete');
+            $('#triA-next').prop('disabled', true);
+            $('#triA-end').prop('disabled', true);
         }
 
         console.log(triA_showing_index);
