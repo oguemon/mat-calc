@@ -221,16 +221,8 @@ $('#calc').on('click', function ()
     ele_matrix_inputA.html(Mat.toMathJax(inputA, 'A'));
     MathJax.Hub.Typeset(ele_matrix_inputA[0], function(){});
 
-    const ele_matrix_inputA_result: JQuery<HTMLElement> = $('#matrix_triA_result');
-    const ele_matrix_inputA_operation: JQuery<HTMLElement> = $('#matrix_triA_operation');
-    const ele_matrix_inputA_button_line: JQuery<HTMLElement> = $('#matrix_triA_button_line');
-    ele_matrix_inputA_result.html(Mat.toMathJax(A, 'A'));
-    MathJax.Hub.Typeset(ele_matrix_inputA_result[0], function(){});
-    ele_matrix_inputA_operation.html('');
-    ele_matrix_inputA_button_line.html('<button id="triA-start">START</button>'
-                                        + '<button id="triA-prev">PREV</button>'
-                                        + '<button id="triA-next">NEXT</button>'
-                                        + '<button id="triA-end">END</button>');
+    $('#matrix_triA_total_step').html(String(step_count));
+    showMatrixTriA(step_count);
 
     let triA_showing_index: number = step_count;
     $('#triA-start').on('click', function(){
@@ -252,8 +244,20 @@ $('#calc').on('click', function ()
 
     // 三角化の結果を表示
     function showMatrixTriA(triA_showing_index: number) {
-        ele_matrix_inputA_result.html(Mat.toMathJax(stepsA[triA_showing_index].result, 'A'));
-        MathJax.Hub.Typeset(ele_matrix_inputA_result[0], function(){});
+        const ele_matrix_triA_result: JQuery<HTMLElement> = $('#matrix_triA_result');
+        const ele_matrix_triA_operation_content: JQuery<HTMLElement> = $('#matrix_triA_operation_content');
+        const ele_matrix_triA_operation_step: JQuery<HTMLElement> = $('#matrix_triA_operation_step');
+
+        ele_matrix_triA_result.html(Mat.toMathJax(stepsA[triA_showing_index].result, 'A'));
+        MathJax.Hub.Typeset(ele_matrix_triA_result[0], function(){});
+        ele_matrix_triA_operation_step.html('Step ' + triA_showing_index);
+        ele_matrix_triA_operation_step.removeClass('complete');
+        $('#matrix_triA .status').removeClass('transparent');
+        $('#matrix_triA_current_step').html(String(triA_showing_index));
+        $('#triA-next').prop('disabled', false);
+        $('#triA-end').prop('disabled', false);
+        $('#triA-start').prop('disabled', false);
+        $('#triA-prev').prop('disabled', false);
 
         // 初期状態に対しては操作内容の表示がないため自然数のみ対象
         if (triA_showing_index > 0) {
@@ -261,13 +265,25 @@ $('#calc').on('click', function ()
             const line2: number = stepsA[triA_showing_index].line2 + 1;
             const multipulator_latex: string = Mynum.toLatex(stepsA[triA_showing_index].multipulator);
             if (stepsA[triA_showing_index].is_swap == true) {
-                ele_matrix_inputA_operation.html(line1 + '行目と' + line2 + '行目を入れ替え');
+                ele_matrix_triA_operation_content.html(line1 + '行目と' + line2 + '行目を入れ替え');
             } else {
-                ele_matrix_inputA_operation.html(line1 + '行目に' + line2 + '行目の\\(' + multipulator_latex + '\\)倍を加算');
-                MathJax.Hub.Typeset(ele_matrix_inputA_operation[0], function(){});
+                ele_matrix_triA_operation_content.html(line1 + '行目に' + line2 + '行目の\\(' + multipulator_latex + '\\)倍を加算');
+                MathJax.Hub.Typeset(ele_matrix_triA_operation_content[0], function(){});
+            }
+
+            // 最終行なら
+            if (triA_showing_index == step_count) {
+                $('#matrix_triA .status').addClass('transparent')
+                ele_matrix_triA_operation_content.append('→<strong>完成</strong>');
+                ele_matrix_triA_operation_step.addClass('complete');
+                $('#triA-next').prop('disabled', true);
+                $('#triA-end').prop('disabled', true);
             }
         } else {
-            ele_matrix_inputA_operation.html('');
+            ele_matrix_triA_operation_content.html('初期状態（入力された行列）');
+            $('#triA-start').prop('disabled', true);
+            $('#triA-prev').prop('disabled', true);
+
         }
 
         console.log(triA_showing_index);
@@ -276,11 +292,21 @@ $('#calc').on('click', function ()
     const ele_matrix_rankA: JQuery<HTMLElement> = $('#matrix_rankA');
     ele_matrix_rankA.html('$$rankA = ' + rank + '$$');
     MathJax.Hub.Typeset(ele_matrix_rankA[0], function(){});
+    if (rank == A.lines) {
+        $('#matrix_rankA_reversible').html('階数と行列の列数が等しいので逆行列があります。');
+    } else {
+        $('#matrix_rankA_reversible').html('階数と行列の列数が等しくないので逆行列がありません……');
+    }
 
 
     const ele_matrix_detA: JQuery<HTMLElement> = $('#matrix_detA');
     ele_matrix_detA.html('$$|A|=' + Mynum.toLatex(detA) + '$$');
     MathJax.Hub.Typeset(ele_matrix_detA[0], function(){});
+    if (detA.isZero()) {
+        $('#matrix_detA_reversible').html('行列式が0なので逆行列がありません……');
+    } else {
+        $('#matrix_detA_reversible').html('行列式が0でないので逆行列があります。');
+    }
 
     const ele_matrix_revA: JQuery<HTMLElement> = $('#matrix_revA');
     // 正方行列の次数と階数が同じなら逆行列を求める
@@ -325,7 +351,7 @@ $('#calc').on('click', function ()
     $('#result').slideDown();
 
     // 移動先を数値で取得(ゆとり分だけ引く)
-    const headline_result_offset: JQuery.Coordinates | undefined = $('#result').offset();
+    const headline_result_offset: JQuery.Coordinates | undefined = $('#panel-header').offset();
     const position: number = (headline_result_offset != undefined)? headline_result_offset.top - 10 : 0;
     // スムーススクロール
     $('body,html').animate({scrollTop:position}, 400, 'swing');

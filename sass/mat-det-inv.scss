@@ -4,6 +4,13 @@ $main_color: #00A5DE;
 $border_color: #ddd;
 $white_color: #fff;
 
+// SPサイズのとき
+@mixin mq() {
+	@media screen and (max-width: 640px) {
+		@content;
+	}
+}
+
 /*
  *  汎用パーツ
  */
@@ -53,6 +60,9 @@ li {
     margin: 0 auto;
     position: relative;
 }
+.transparent {
+    opacity: 0;
+}
 
 /*
  *  ヘッダー
@@ -95,8 +105,33 @@ li {
     margin-bottom: 15px;
     padding: 20px;
     background: $white_color;
-    border-radius: 5px;
-    box-shadow: 1px 1px 10px rgba(0,0,0,0.15);
+    border-radius: 3px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.15);
+    position: relative;
+
+    .title {
+        font-size: 150%;
+        font-weight: bold;
+        color: $main_color;
+    }
+
+    .status {
+        padding: 3px 8px;
+        color: $white_color;
+        font-weight: bold;
+        background: #888;
+        border-radius: 3px;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        transition: opacity ease-in-out .2s;
+    }
+
+    .message {
+        padding: 5px 10px;
+        background: #e6f7ff;
+        border-radius: 3px;
+    }
 }
 /*
  *  フォーム
@@ -179,17 +214,25 @@ input[type="button"] {
     border: 1px solid $border_color;
     border-radius: 3px;
     display: inline-block;
+    transition: opacity ease-in-out .2s;
 
+    &:hover {
+        opacity: 0.5;
+    }
     &#calc{
         color: $white_color;
         font-weight: bold;
         background: $main_color;
         border: none;
+
+        @include mq() {
+            width: 100%;
+        }
     }
 }
 
 /*
- *  結果表示など
+ *  エラー表示など
  */
 #input_attention_btn {
     margin: 10px 0 5px 0;
@@ -214,6 +257,10 @@ input[type="button"] {
 #button_box {
     margin: 0 0 15px 0;
 }
+
+/*
+ *  結果表示
+ */
 #result {
     display: none;
 }
@@ -225,6 +272,99 @@ input[type="button"] {
     font-style: normal;
     display: inline-block;
 }
+#panel-header {
+    margin: 20px 0 5px 0;
+    font-size: 200%;
+}
+#matrix_triA_button_line {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    background: #f5f5f5;
+
+    button {
+        width: 40px;
+        height: 40px;
+        margin: 0 3px;
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-size: 80%;
+        background-position: center;
+        border: none;
+        display: inline-block;
+        transition: opacity ease-in-out .2s;
+
+        &:hover {
+            opacity: 0.5;
+        }
+        &:disabled {
+            opacity: 0;
+        }
+
+        &#triA-start {
+            background-image: url(img/button-start.svg);
+        }
+        &#triA-prev {
+            background-image: url(img/button-prev.svg);
+        }
+        &#triA-next {
+            background-image: url(img/button-next.svg);
+        }
+        &#triA-end {
+            background-image: url(img/button-end.svg);
+        }
+    }
+
+    span#triA-progress {
+        margin: 0 10px;
+        line-height: 1;
+        text-align: center;
+    }
+
+    span#matrix_triA_step_header {
+        font-size: 80%;
+    }
+
+    span#matrix_triA_current_step,
+    span#matrix_triA_total_step {
+        font-size: 130%;
+    }
+}
+#matrix_triA_operation {
+    width: 100%;
+    display: table;
+
+    #matrix_triA_operation_step {
+        width: 60px;
+        color: $white_color;
+        font-weight: bold;
+        text-align: center;
+        background: $main_color;
+        border-radius: 3px 0 0 3px;
+        display: table-cell;
+
+        &.complete {
+            background: #ff5a68;
+        }
+    }
+    #matrix_triA_operation_content {
+        padding: 5px 10px;
+        border-radius: 0 3px 3px 0;
+        background: #fffccc;
+        display: table-cell;
+    }
+}
+#matrix_rankA {
+    font-size: 200%;
+}
+#matrix_detA {
+    font-size: 200%;
+}
+/*
+ *　　GoogleAdsense
+ */
 .google_ad {
     margin: 10px 0;
     text-align: center;

@@ -113,32 +113,47 @@
                 <!-- 結果表示 -->
                 <div id="result">
                     <div class="info-panel">
-                        <h2>入力した行列</h2>
+                        <div class="title">入力した行列</div>
                         <div id="matrix_A"></div>
                     </div>
+                    <div id="panel-header">計算結果</div>
                     <div class="info-panel">
                         <div id="matrix_triA">
-                            <h2>三角化</h2>
+                            <div class="title">三角化</div>
+                            <div class="status">途中経過(未完成)</div>
                             <div id="matrix_triA_result"></div>
-                            <div id="matrix_triA_operation"></div>
-                            <div id="matrix_triA_button_line"></div>
+                            <div id="matrix_triA_operation">
+                                <div id="matrix_triA_operation_step">STEP 0</div>
+                                <div id="matrix_triA_operation_content"></div>
+                            </div>
+                            <div id="matrix_triA_button_line">
+                                <button id="triA-start"></button>
+                                <button id="triA-prev"></button>
+                                <span id="triA-progress">
+                                    <span id="matrix_triA_step_header">STEP</span><br>
+                                    <span id="matrix_triA_current_step"></span> / <span id="matrix_triA_total_step"></span></span>
+                                <button id="triA-next"></button>
+                                <button id="triA-end"></button>
+                            </div>
                         </div>
                     </div>
                     <div class="info-panel">
-                        <h2>階数</h2>
+                        <div class="title">階数</div>
                         <div id="matrix_rankA"></div>
+                        <div class="message" id="matrix_rankA_reversible"></div>
                     </div>
                     <div class="info-panel">
-                        <h2>行列式</h2>
+                        <div class="title">行列式</div>
                         <div id="matrix_detA"></div>
+                        <div class="message" id="matrix_detA_reversible"></div>
                     </div>
                     <div class="info-panel">
-                        <h2>逆行列</h2>
+                        <div class="title">逆行列</div>
                         <div id="matrix_revA"></div>
                     </div>
                     <!--
                     <div class="info-panel">
-                        <h2></h2>
+                        <div class="title"></div>
                         <div id="matrix_checkE"></div>
                     </div>
                     -->
