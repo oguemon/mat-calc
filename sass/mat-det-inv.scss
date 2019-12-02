@@ -136,6 +136,9 @@ li {
 /*
  *  フォーム
  */
+#matrix_input {
+    white-space: nowrap;
+}
 input[type="text"] {
     width: 45px;
     height: 40px;
