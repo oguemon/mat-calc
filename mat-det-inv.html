@@ -69,20 +69,6 @@
                         <input type="text" id="a-7" name="matrix[]" value="0">
                         <input type="text" id="a-8" name="matrix[]" value="0">
                     </div>
-
-                    <!-- 注意事項 -->
-                    <a id="input_attention_btn">▼入力時の注意事項を開く</a>
-                    <div id="input_attention">
-                    <ul>
-                        <li>行列サイズは<strong>2×2〜10×10</strong>に対応しています！</li>
-                        <li>成分毎の入力窓をスムーズに行き来できるキーがPC/SP共に用意されてるので探してみてね（PCだとTabキー）</li>
-                        <li>入出力は<strong>整数or小数or分数</strong>で行われます。ルートには対応していません…</li>
-                        <li>計算結果は<strong>分数で表現されます</strong>。小数の結果が欲しい方は電卓を叩いてください。</li>
-                        <li>当計算機は掃き出し法というものを利用して行列式と逆行列を求値しています。</li>
-                        <li><strong>その他の不具合やご要望などがございましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</strong></li>
-                        <li>当ページ下部にある免責事項等をお読みになった上でご利用願います。</li>
-                    </ul>
-                    </div>
                     <!-- 計算ドリルモード -->
                     <label>
                         <input type="checkbox" checked id="drill">
@@ -96,6 +82,19 @@
                         <input type="button" id="calc" value="計算スタート">
                     </div>
                     <div id="error_msg_box"></div>
+                    <!-- 注意事項 -->
+                    <div id="input_attention">
+                        <a id="input_attention_btn">入力時の注意事項を開閉</a>
+                        <ul id="input_attention_list">
+                            <li>行列サイズは<strong>2×2〜10×10</strong>に対応しています！</li>
+                            <li>成分毎の入力窓をスムーズに行き来できるキーがPC/SP共に用意されてるので探してみてね（PCだとTabキー）</li>
+                            <li>入出力は<strong>整数or小数or分数</strong>で行われます。ルートには対応していません…</li>
+                            <li>計算結果は<strong>分数で表現されます</strong>。小数の結果が欲しい方は電卓を叩いてください。</li>
+                            <li>プログラムの性質上、膨大な数を取り扱うと桁落ちが発生し結果に誤差が生じることがあります。</li>
+                            <li><strong>その他の不具合やご要望などがございましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</strong></li>
+                            <li>当ページ下部にある免責事項等をお読みになった上でご利用願います。</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <!-- Google Adsense広告（Webサービス入力下部） -->

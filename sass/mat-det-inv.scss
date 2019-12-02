@@ -234,17 +234,25 @@ input[type="button"] {
 /*
  *  エラー表示など
  */
-#input_attention_btn {
-    margin: 10px 0 5px 0;
-    padding: 5px 0;
-    text-align: center;
-    border-top: 1px solid $border_color;
-    border-bottom: 1px solid $border_color;
-    display: block;
-}
 #input_attention {
+    border-radius: 18px;
+}
+#input_attention_btn {
+    height: 36px;
+    margin: 10px 0 5px 0;
+    text-align: center;
+    line-height: 36px;
+    border-radius: 18px;
+    transition: background-color ease-in-out .2s;
+    display: block;
+
+    &:hover {
+        background-color: #f8f8f8;
+    }
+}
+#input_attention_list {
     font-size: 80%;
-    padding: 5px 0 0 0;
+    padding: 10px 20px 10px 35px;
     display: none;
 }
 #error_msg {

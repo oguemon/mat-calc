@@ -18,15 +18,7 @@ $(window).on('load',function(){
  */
 $('#input_attention_btn').on('click', function ()
 {
-    if ($('#input_attention').css('display') != 'block')
-    {
-        $(this).html('▲入力時の注意事項を閉じる');
-    }
-    else
-    {
-        $(this).html('▼入力時の注意事項を開く');
-    }
-    $('#input_attention').slideToggle(300);
+    $('#input_attention_list').slideToggle(300);
 });
 
 /*
