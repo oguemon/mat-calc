@@ -324,16 +324,6 @@ $('#calc').on('click', function ()
         // 結果の表示
         ele_matrix_revA.html(Mat.toMathJax(B, 'A^{-1}'));
         MathJax.Hub.Typeset(ele_matrix_revA[0], function(){});
-
-        // 掛け算して単位行列になるかチェック
-        /*
-        const ele_matrix_checkE: JQuery<HTMLElement> = $('#matrix_checkE');
-        ele_matrix_checkE.html('<h3>掛けた結果</h3>');
-        if (Mat.mul(inputA, B) != null) {
-            ele_matrix_checkE.append(Mat.toMathJax(Mat.mul(inputA, B), 'AA^{-1}'));
-            MathJax.Hub.Typeset(ele_matrix_checkE[0], function(){});
-        }
-        */
     } else {
         // 逆行列がない旨の表示
         ele_matrix_revA.html('逆行列はありません（階数と正方行列の次数が異なるから）');
@@ -380,13 +370,4 @@ function updateInputForm ()
     }
 
     $('#matrix_input').html(string);
-}
-
-/*
- *  平方数かどうかを確認
- */
-function is_square(n: number): boolean
-{
-    const sqrt: number = Math.floor(Math.pow(n, 0.5));
-    return (sqrt * sqrt == n);
 }
