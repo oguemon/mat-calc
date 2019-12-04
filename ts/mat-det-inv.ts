@@ -4,7 +4,6 @@ let N: number = 3;
 interface LU {
     L: number[],
     U: number[],
-    LxU: number[],
     pivot: number[],
     pivot_count: number
 }
@@ -370,4 +369,106 @@ function updateInputForm ()
     }
 
     $('#matrix_input').html(string);
+}
+
+// LU分解を行う
+function makeLU (A: number[]) : LU
+{
+    // 行の入れ替え状況を格納する配列
+    let pivot: number[] = [];
+    for (let i = 0; i < N; i++) {
+        pivot[i] = i;
+    }
+    // 入れ替え回数をカウントする配列
+    let pivot_count: number = 0;
+
+    // i行目について扱う
+    for (let i = 0; i < N - 1; i++)
+    {
+        /*
+         * 対角成分が0にならないように行を入れ替え
+         */
+        // i+1行目以下のi列目成分の中で絶対値が最大のものを求める
+        let max_line: number = i;
+        let max_value: number = Math.abs(A[i + i * N]);
+        for (let j = i + 1; j < N; j++)
+        {
+            if (Math.abs(A[i + j * N]) > max_value)
+            {
+                max_line  = j;
+                max_value = Math.abs(A[i + j * N]);
+            }
+        }
+        // 最大が0だったら、i行目以下が全部0ということ（おしり）
+        if (max_value == 0)
+        {
+            continue;
+        }
+        // 最大が0じゃなくて対角成分以上の行があった→行を入れ替える
+        if (i != max_line)
+        {
+            for (let j = 0; j < N; j++)
+            {
+                // 行の入れ替え
+                const tmp: number = A[j + i * N];
+                A[j + i * N] = A[j + max_line * N];
+                A[j + max_line * N] = tmp;
+            }
+            // ピボット配列（入替記録）の更新
+            const tmp: number = pivot[i]
+            pivot[i] = pivot[max_line];
+            pivot[max_line] = tmp;
+            // ピポットカウンターのインクリメント
+            pivot_count++;
+        }
+
+        /*
+         * i行目のの割り算(U作り)
+         */
+        for (let j = i + 1; j < N; j++)
+        {
+            A[i + j * N] /= A[i + i * N];
+        }
+        /*
+         * j行目とi列目で行列を作って余因子から引く
+         */
+        for (let n = i + 1; n < N; n++)
+        {
+            for (let m = i + 1; m < N; m++)
+            {
+                A[m + n * N] -= A[m + i * N] * A[i + n * N];
+            }
+        }
+    }
+
+    // LとUを出す
+    const L: number[] = A.slice();
+    const U: number[] = A.slice();
+    for (let i = 0; i < N; i++)
+    {
+        for (let j = 0; j < N; j++)
+        {
+            if (i < j)
+            {
+                L[j + i * N] = 0;
+            }
+            else if (i > j)
+            {
+                U[j + i * N] = 0;
+            }
+            else
+            {
+                L[j + i * N] = 1;
+            }
+        }
+    }
+
+    let ans: LU = {
+        L: L,
+        U: U,
+        pivot: pivot,
+        pivot_count: pivot_count
+    };
+
+    return ans;
 }
