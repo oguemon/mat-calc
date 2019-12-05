@@ -103,6 +103,18 @@ class Mynum {
     return new Mynum(this.n, this.d);
   }
 
+  public abs (): Mynum {
+    return new Mynum(Math.abs(this.n), this.d);
+  }
+
+  public lessThan(a: Mynum): Boolean {
+    return (a.n * this.d - a.d * this.n) > 0;
+  }
+
+  public moreThan(a: Mynum): Boolean {
+    return (a.n * this.d - a.d * this.n) < 0;
+  }
+
   public eq (a: Mynum): Boolean {
     return (this.n == a.n && this.d == a.d);
   }

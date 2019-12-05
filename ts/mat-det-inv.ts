@@ -2,8 +2,8 @@
 let N: number = 3;
 
 interface LU {
-    L: number[],
-    U: number[],
+    L: Mat.Mat,
+    U: Mat.Mat,
     pivot: number[],
     pivot_count: number
 }
@@ -328,6 +328,19 @@ $('#calc').on('click', function ()
         ele_matrix_revA.html('逆行列はありません（階数と正方行列の次数が異なるから）');
     }
 
+    // LU分解
+    const ele_matrix_L: JQuery<HTMLElement> = $('#matrix_L');
+    const ele_matrix_U: JQuery<HTMLElement> = $('#matrix_U');
+    const LU: LU = makeLU (inputA);
+    ele_matrix_L.html(Mat.toMathJax(LU.L, 'L'));
+    ele_matrix_U.html(Mat.toMathJax(LU.U, 'U'));
+    MathJax.Hub.Typeset(ele_matrix_L[0], function(){});
+    MathJax.Hub.Typeset(ele_matrix_U[0], function(){});
+
+    const ele_matrix_LU: JQuery<HTMLElement> = $('#matrix_LU');
+    ele_matrix_LU.html(Mat.toMathJax(Mat.mul(LU.L, LU.U), 'LU'));
+    MathJax.Hub.Typeset(ele_matrix_LU[0], function(){});
+
     // 結果をスライド表示する
     $('#result').slideDown();
 
@@ -372,7 +385,7 @@ function updateInputForm ()
 }
 
 // LU分解を行う
-function makeLU (A: number[]) : LU
+function makeLU (A: Mat.Mat) : LU
 {
     // 行の入れ替え状況を格納する配列
     let pivot: number[] = [];
@@ -390,30 +403,26 @@ function makeLU (A: number[]) : LU
          */
         // i+1行目以下のi列目成分の中で絶対値が最大のものを求める
         let max_line: number = i;
-        let max_value: number = Math.abs(A[i + i * N]);
+        let max_value: Mynum = A.val[i][i].abs();
         for (let j = i + 1; j < N; j++)
         {
-            if (Math.abs(A[i + j * N]) > max_value)
+            if (max_value.lessThan(A.val[j][i].abs()))
             {
                 max_line  = j;
-                max_value = Math.abs(A[i + j * N]);
+                max_value = A.val[j][i].abs();
             }
         }
         // 最大が0だったら、i行目以下が全部0ということ（おしり）
-        if (max_value == 0)
+        if (max_value.isZero())
         {
             continue;
         }
         // 最大が0じゃなくて対角成分以上の行があった→行を入れ替える
         if (i != max_line)
         {
-            for (let j = 0; j < N; j++)
-            {
-                // 行の入れ替え
-                const tmp: number = A[j + i * N];
-                A[j + i * N] = A[j + max_line * N];
-                A[j + max_line * N] = tmp;
-            }
+            // 行の入れ替え
+            Mat.swap2Lines(A, i, max_line);
+
             // ピボット配列（入替記録）の更新
             const tmp: number = pivot[i]
             pivot[i] = pivot[max_line];
@@ -427,7 +436,7 @@ function makeLU (A: number[]) : LU
          */
         for (let j = i + 1; j < N; j++)
         {
-            A[i + j * N] /= A[i + i * N];
+            A.val[j][i] = Mynum.div(A.val[j][i], A.val[i][i]);
         }
         /*
          * j行目とi列目で行列を作って余因子から引く
@@ -436,29 +445,29 @@ function makeLU (A: number[]) : LU
         {
             for (let m = i + 1; m < N; m++)
             {
-                A[m + n * N] -= A[m + i * N] * A[i + n * N];
+                A.val[n][m] = Mynum.sub(A.val[n][m], Mynum.mul(A.val[i][m], A.val[n][i]));
             }
         }
     }
 
     // LとUを出す
-    const L: number[] = A.slice();
-    const U: number[] = A.slice();
+    const L: Mat.Mat = $.extend(true, {}, A);
+    const U: Mat.Mat = $.extend(true, {}, A);
     for (let i = 0; i < N; i++)
     {
         for (let j = 0; j < N; j++)
         {
             if (i < j)
             {
-                L[j + i * N] = 0;
+                L.val[i][j] = new Mynum(0);
             }
             else if (i > j)
             {
-                U[j + i * N] = 0;
+                U.val[i][j] = new Mynum(0);
             }
             else
             {
-                L[j + i * N] = 1;
+                L.val[i][j] = new Mynum(1);
             }
         }
     }
