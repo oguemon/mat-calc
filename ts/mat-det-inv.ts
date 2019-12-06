@@ -387,14 +387,6 @@ function updateInputForm ()
 // LU分解を行う
 function makeLU (A: Mat.Mat) : LU
 {
-    // 行の入れ替え状況を格納する配列
-    let pivot: number[] = [];
-    for (let i = 0; i < N; i++) {
-        pivot[i] = i;
-    }
-    // 入れ替え回数をカウントする配列
-    let pivot_count: number = 0;
-
     // i行目について扱う
     for (let i = 0; i < N - 1; i++)
     {
@@ -416,19 +408,6 @@ function makeLU (A: Mat.Mat) : LU
         if (max_value.isZero())
         {
             continue;
-        }
-        // 最大が0じゃなくて対角成分以上の行があった→行を入れ替える
-        if (i != max_line)
-        {
-            // 行の入れ替え
-            Mat.swap2Lines(A, i, max_line);
-
-            // ピボット配列（入替記録）の更新
-            const tmp: number = pivot[i];
-            pivot[i] = pivot[max_line];
-            pivot[max_line] = tmp;
-            // ピポットカウンターのインクリメント
-            pivot_count++;
         }
 
         /*
