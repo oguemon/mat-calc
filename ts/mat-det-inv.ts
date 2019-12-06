@@ -424,7 +424,7 @@ function makeLU (A: Mat.Mat) : LU
             Mat.swap2Lines(A, i, max_line);
 
             // ピボット配列（入替記録）の更新
-            const tmp: number = pivot[i]
+            const tmp: number = pivot[i];
             pivot[i] = pivot[max_line];
             pivot[max_line] = tmp;
             // ピポットカウンターのインクリメント
