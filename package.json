@@ -4,7 +4,7 @@
   "description": "SASSとjsのコンパイル。",
   "private": true,
   "dependencies": {
-    "typescript": "3.5.1",
+    "typescript": "3.9.10",
     "browserify": "^16.2.3",
     "vinyl-source-stream": "^2.0.0",
     "vinyl-buffer": "1.0.1",
