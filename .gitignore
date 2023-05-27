@@ -1,4 +1,6 @@
 .vscode/
 /node_modules
+/out
+.DS_Store
 mat-det-inv.css
 mat-det-inv.min.js

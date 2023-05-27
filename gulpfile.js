@@ -14,13 +14,13 @@ var buffer     = require('vinyl-buffer');
 gulp.task('sass', function() {
     return gulp.src('./sass/*.scss')
             .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-            .pipe(gulp.dest('./'))
+            .pipe(gulp.dest('./out'))
 });
 /*
 gulp.task('bundlejs', function() {
     return browserify('./js/mat-det-inv.js')
             .bundle()
-            .pipe(source('mat-det-inv.min.js'))
+            .pipe(source('script.js'))
             .pipe(gulp.dest('./'));
 });
 */
@@ -30,9 +30,9 @@ gulp.task('compile-js-dev', function() {
                 target: 'ES6',
                 moduleResolution: 'nodenext',
                 removeComments: true,
-                outFile: 'mat-det-inv.min.js'
+                outFile: 'script.js'
             }))
-            .pipe(gulp.dest('./'));
+            .pipe(gulp.dest('./out'));
 });
 
 gulp.task('compile-js-release', function() {
@@ -47,16 +47,16 @@ gulp.task('compile-js-release', function() {
                 warning_level: 'DEFAULT',
                 language_in: 'ECMASCRIPT_2015',
                 language_out: 'ECMASCRIPT_2015',
-                js_output_file: 'mat-det-inv.min.js'
+                js_output_file: 'script.js'
             }))
-            .pipe(gulp.dest('./'));
+            .pipe(gulp.dest('./out'));
 });
 
 gulp.task('build-server', function (done) {
     browsersync.init({
         server: {
             baseDir: "./",
-            index  : "mat-det-inv.html"
+            index  : "index.html"
         }
     });
     done();

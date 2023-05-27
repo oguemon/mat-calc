@@ -4,8 +4,6 @@ let N: number = 3;
 interface LU {
     L: Mat.Mat,
     U: Mat.Mat,
-    pivot: number[],
-    pivot_count: number
 }
 
 $(window).on('load',function(){
@@ -338,8 +336,11 @@ $('#calc').on('click', function ()
     MathJax.Hub.Typeset(ele_matrix_U[0], function(){});
 
     const ele_matrix_LU: JQuery<HTMLElement> = $('#matrix_LU');
-    ele_matrix_LU.html(Mat.toMathJax(Mat.mul(LU.L, LU.U), 'LU'));
-    MathJax.Hub.Typeset(ele_matrix_LU[0], function(){});
+    const mulLU = Mat.mul(LU.L, LU.U)
+    if (mulLU !== null) {
+        ele_matrix_LU.html(Mat.toMathJax(mulLU, 'LU'));
+        MathJax.Hub.Typeset(ele_matrix_LU[0], function(){});
+    }
 
     // 結果をスライド表示する
     $('#result').slideDown();
@@ -454,8 +455,6 @@ function makeLU (A: Mat.Mat) : LU
     let ans: LU = {
         L: L,
         U: U,
-        pivot: pivot,
-        pivot_count: pivot_count
     };
 
     return ans;
