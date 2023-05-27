@@ -1,6 +1,6 @@
 // Sass configuration
 const gulp = require('gulp');
-const sass = require('gulp-sass');
+const sass = (require('gulp-sass'))(require('sass'));
 const typescript = require('gulp-typescript');
 const browsersync = require('browser-sync');
 const closureCompiler = require('google-closure-compiler').gulp();
@@ -28,8 +28,9 @@ gulp.task('compile-js-dev', function() {
     return gulp.src('./ts/*.ts')
             .pipe(typescript({
                 target: 'ES6',
+                moduleResolution: 'nodenext',
                 removeComments: true,
-                out: 'mat-det-inv.min.js'
+                outFile: 'mat-det-inv.min.js'
             }))
             .pipe(gulp.dest('./'));
 });
@@ -38,6 +39,7 @@ gulp.task('compile-js-release', function() {
     return gulp.src('./ts/*.ts')
             .pipe(typescript({
                 target: 'ES6',
+                moduleResolution: 'nodenext',
                 removeComments: true
             }))
             .pipe(closureCompiler({

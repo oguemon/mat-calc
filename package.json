@@ -3,21 +3,26 @@
   "version": "1.0.0",
   "description": "SASSとjsのコンパイル。",
   "private": true,
+  "scripts": {
+    "dev": "gulp develop",
+    "build": "gulp release"
+  },
   "dependencies": {
-    "typescript": "3.9.10",
-    "browserify": "^16.2.3",
-    "vinyl-source-stream": "^2.0.0",
+    "@types/jquery": "3.5.16",
+    "@types/mathjax": "0.0.37",
+    "browser-sync": "2.29.3",
+    "browserify": "17.0.0",
+    "google-closure-compiler": "20230502.0.0",
+    "gulp": "4.0.2",
+    "gulp-cli": "2.3.0",
+    "gulp-less": "5.0.0",
+    "gulp-sass": "5.1.0",
+    "gulp-typescript": "6.0.0-alpha.1",
+    "jquery": "3.7.0",
+    "mathjax": "3.2.2",
+    "sass": "1.62.1",
+    "typescript": "5.0.4",
     "vinyl-buffer": "1.0.1",
-    "google-closure-compiler": "^20190528.0.0",
-    "gulp": "^4.0.0",
-    "gulp-cli": "^2.0.1",
-    "gulp-less": "^4.0.1",
-    "gulp-sass": "^4.0.2",
-    "gulp-typescript": "^5.0.1",
-    "browser-sync": "^2.26.7",
-    "jquery": "^3.4.1",
-    "@types/jquery": "^3.3.29",
-    "mathjax": "^2.7.5",
-    "@types/mathjax": "^0.0.37"
+    "vinyl-source-stream": "2.0.0"
   }
 }
