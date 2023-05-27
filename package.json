@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "typescript": "3.9.10",
-    "browserify": "^16.2.3",
+    "browserify": "^17.0.0",
     "vinyl-source-stream": "^2.0.0",
     "vinyl-buffer": "1.0.1",
     "google-closure-compiler": "^20190528.0.0",
