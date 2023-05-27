@@ -1,183 +1,183 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>行列式・逆行列計算機(問題の答え合わせや試験対策に！) byおぐえもん.com</title>
-    <link rel="stylesheet" href="./out/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>行列式・逆行列計算機(問題の答え合わせや試験対策に！) byおぐえもん.com</title>
+  <link rel="stylesheet" href="./out/style.css">
 
-    <!-- Google Analytics-->
-    <script type="text/javascript" >
-        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-        ga('create', 'UA-89114839-2', { 'cookieDomain': 'oguemon.com' } );
-        // Plugins
+  <!-- Google Analytics-->
+  <script type="text/javascript" >
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-89114839-2', { 'cookieDomain': 'oguemon.com' } );
+    // Plugins
 
-        ga('send', 'pageview');
-    </script>
-    <script async src="https://www.google-analytics.com/analytics.js"></script>
+    ga('send', 'pageview');
+  </script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
 
-    <!-- Google Adsense -->
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Google Adsense -->
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
-    <!-- OGP設定  -->
-    <meta property="og:title" content="行列式・逆行列計算機(問題の答え合わせや試験対策に！)">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://mat-det-inv.tools.oguemon.com/">
-    <meta property="og:image" content="https://mat-det-inv.tools.oguemon.com/img/og.png">
-    <meta property="og:site_name" content="おぐえもん.com">
-    <meta property="og:description" content="線形代数の「行列式」と「逆行列」を驚異的な速度で計算します。電卓のみならず計算ドリルにも使えます！">
-    <meta property="fb:app_id" content="1846956072250071">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@oguemon_com">
+  <!-- OGP設定  -->
+  <meta property="og:title" content="行列式・逆行列計算機(問題の答え合わせや試験対策に！)">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://mat-det-inv.tools.oguemon.com/">
+  <meta property="og:image" content="https://mat-det-inv.tools.oguemon.com/img/og.png">
+  <meta property="og:site_name" content="おぐえもん.com">
+  <meta property="og:description" content="線形代数の「行列式」と「逆行列」を驚異的な速度で計算します。電卓のみならず計算ドリルにも使えます！">
+  <meta property="fb:app_id" content="1846956072250071">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@oguemon_com">
 
-    <!-- Favicon設定(暫定) -->
-    <link rel="shortcut icon" href="./img/favicon.ico" />
-    <link rel="icon" href="./img/site-icon-32.png" sizes="32x32" />
-    <link rel="icon" href="./img/site-icon-192.png" sizes="192x192" />
-    <link rel="apple-touch-icon-precomposed" href="./img/site-icon-180.png" />
-    <meta name="msapplication-TileImage" content="./img/site-icon-270.png" />
+  <!-- Favicon設定(暫定) -->
+  <link rel="shortcut icon" href="./img/favicon.ico" />
+  <link rel="icon" href="./img/site-icon-32.png" sizes="32x32" />
+  <link rel="icon" href="./img/site-icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon-precomposed" href="./img/site-icon-180.png" />
+  <meta name="msapplication-TileImage" content="./img/site-icon-270.png" />
 </head>
 <body>
-    <div id="header">
-        <div class="wrapper">
-            <div id="logo">
-                <a href="https://oguemon.com/topic/study/linear-algebra/" target="_blenk">
-                    <img src="img/mat-det-inv-logo.svg">
-                </a>
-            </div>
-            <div id="twitter">
-                <a href="http://twitter.com/share?url=https://mat-det-inv.tools.oguemon.com/&text=行列式・逆行列計算機(問題の答え合わせや試験対策に！) byおぐえもん.com&related=oguemon_com" target="_blenk">
-                    <img src="img/twitter-icon.svg">
-                </a>
-            </div>
+  <div id="header">
+    <div class="wrapper">
+      <div id="logo">
+        <a href="https://oguemon.com/topic/study/linear-algebra/" target="_blenk">
+          <img src="img/mat-det-inv-logo.svg">
+        </a>
+      </div>
+      <div id="twitter">
+        <a href="http://twitter.com/share?url=https://mat-det-inv.tools.oguemon.com/&text=行列式・逆行列計算機(問題の答え合わせや試験対策に！) byおぐえもん.com&related=oguemon_com" target="_blenk">
+          <img src="img/twitter-icon.svg">
+        </a>
+      </div>
+    </div>
+  </div>
+  <div id="main-contents">
+    <div class="wrapper">
+      <div class="container">
+        <div class="info-panel">
+          <!-- 入力フォーム -->
+          <h2>行列の入力</h2>
+          小数と分数の入力に対応！(結果は分数で表示されます)
+          <div id="matrix_input">
+            <input type="text" id="a-0" name="matrix[]" value="0">
+            <input type="text" id="a-1" name="matrix[]" value="0">
+            <input type="text" id="a-2" name="matrix[]" value="0"><br>
+            <input type="text" id="a-3" name="matrix[]" value="0">
+            <input type="text" id="a-4" name="matrix[]" value="0">
+            <input type="text" id="a-5" name="matrix[]" value="0"><br>
+            <input type="text" id="a-6" name="matrix[]" value="0">
+            <input type="text" id="a-7" name="matrix[]" value="0">
+            <input type="text" id="a-8" name="matrix[]" value="0">
+          </div>
+          <!-- 計算ドリルモード -->
+          <label>
+            <input type="checkbox" checked id="drill">
+            <span class="checkbox">計算ドリルモード<br><small>(実際に解いて答えを確かめよう！)</small></span>
+          </label>
+          <!-- いろんなボタン -->
+          <div id="button_box">
+            <input type="button" id="dim_add" value="次元＋">
+            <input type="button" id="dim_dec" value="次元ー">
+            <input type="button" id="reset" value="リセット">
+            <input type="button" id="calc" value="計算スタート">
+          </div>
+          <div id="error_msg_box"></div>
+          <!-- 注意事項 -->
+          <div id="input_attention">
+            <a id="input_attention_btn">入力時の注意事項を開閉</a>
+            <ul id="input_attention_list">
+              <li>行列サイズは<strong>2×2〜10×10</strong>に対応しています！</li>
+              <li>成分毎の入力窓をスムーズに行き来できるキーがPC/SP共に用意されてるので探してみてね（PCだとTabキー）</li>
+              <li>入出力は<strong>整数or小数or分数</strong>で行われます。ルートは未対応…</li>
+              <li>計算結果は<strong>分数で表現されます</strong>。小数の結果が欲しい方は電卓を叩いてください。</li>
+              <li>プログラムの性質上、膨大な数を取り扱うと桁落ちが発生し結果に誤差が生じることがあります。</li>
+              <li><strong>その他の不具合やご要望などがありましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</strong></li>
+              <li>入力値は、今後の精度改善などの目的のために利用および公開する場合がございます。</li>
+              <li>当サービスを利用して生じた一切の損害およびトラブル等について、運営者は一切の責任を負いません。</li>
+            </ul>
+          </div>
         </div>
-    </div>
-    <div id="main-contents">
-        <div class="wrapper">
-            <div class="container">
-                <div class="info-panel">
-                    <!-- 入力フォーム -->
-                    <h2>行列の入力</h2>
-                    小数と分数の入力に対応！(結果は分数で表示されます)
-                    <div id="matrix_input">
-                        <input type="text" id="a-0" name="matrix[]" value="0">
-                        <input type="text" id="a-1" name="matrix[]" value="0">
-                        <input type="text" id="a-2" name="matrix[]" value="0"><br>
-                        <input type="text" id="a-3" name="matrix[]" value="0">
-                        <input type="text" id="a-4" name="matrix[]" value="0">
-                        <input type="text" id="a-5" name="matrix[]" value="0"><br>
-                        <input type="text" id="a-6" name="matrix[]" value="0">
-                        <input type="text" id="a-7" name="matrix[]" value="0">
-                        <input type="text" id="a-8" name="matrix[]" value="0">
-                    </div>
-                    <!-- 計算ドリルモード -->
-                    <label>
-                        <input type="checkbox" checked id="drill">
-                        <span class="checkbox">計算ドリルモード<br><small>(実際に解いて答えを確かめよう！)</small></span>
-                    </label>
-                    <!-- いろんなボタン -->
-                    <div id="button_box">
-                        <input type="button" id="dim_add" value="次元＋">
-                        <input type="button" id="dim_dec" value="次元ー">
-                        <input type="button" id="reset" value="リセット">
-                        <input type="button" id="calc" value="計算スタート">
-                    </div>
-                    <div id="error_msg_box"></div>
-                    <!-- 注意事項 -->
-                    <div id="input_attention">
-                        <a id="input_attention_btn">入力時の注意事項を開閉</a>
-                        <ul id="input_attention_list">
-                            <li>行列サイズは<strong>2×2〜10×10</strong>に対応しています！</li>
-                            <li>成分毎の入力窓をスムーズに行き来できるキーがPC/SP共に用意されてるので探してみてね（PCだとTabキー）</li>
-                            <li>入出力は<strong>整数or小数or分数</strong>で行われます。ルートは未対応…</li>
-                            <li>計算結果は<strong>分数で表現されます</strong>。小数の結果が欲しい方は電卓を叩いてください。</li>
-                            <li>プログラムの性質上、膨大な数を取り扱うと桁落ちが発生し結果に誤差が生じることがあります。</li>
-                            <li><strong>その他の不具合やご要望などがありましたら、おぐえもん（<a href="https://twitter.com/oguemon_com" target="_blenk">@oguemon_com</a>）までご連絡ください。</strong></li>
-                            <li>入力値は、今後の精度改善などの目的のために利用および公開する場合がございます。</li>
-                            <li>当サービスを利用して生じた一切の損害およびトラブル等について、運営者は一切の責任を負いません。</li>
-                        </ul>
-                    </div>
-                </div>
 
-                <!-- Google Adsense広告（Webサービス入力下部） -->
-                <div class="google_ad">
-                    <ins class="adsbygoogle"
-                    style="display:block"
-                    data-ad-client="ca-pub-6941251424797111"
-                    data-ad-slot="8874373153"
-                    data-ad-format="auto"></ins>
-                    <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                </div>
-
-                <!-- 結果表示 -->
-                <div id="result">
-                    <div class="info-panel">
-                        <div class="title">入力した行列</div>
-                        <div id="matrix_A"></div>
-                    </div>
-                    <div id="panel-header">計算結果</div>
-                    <div class="info-panel">
-                        <div id="matrix_triA">
-                            <div class="title">三角化</div>
-                            <div class="status">途中経過(未完成)</div>
-                            <div id="matrix_triA_result"></div>
-                            <div id="matrix_triA_operation">
-                                <div id="matrix_triA_operation_step">STEP 0</div>
-                                <div id="matrix_triA_operation_content"></div>
-                            </div>
-                            <div id="matrix_triA_button_line">
-                                <button id="triA-start"></button>
-                                <button id="triA-prev"></button>
-                                <span id="triA-progress">
-                                    <span id="matrix_triA_step_header">STEP</span><br>
-                                    <span id="matrix_triA_current_step"></span> / <span id="matrix_triA_total_step"></span></span>
-                                <button id="triA-next"></button>
-                                <button id="triA-end"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="info-panel">
-                        <div class="title">階数</div>
-                        <div id="matrix_rankA"></div>
-                        <div class="message" id="matrix_rankA_reversible"></div>
-                    </div>
-                    <div class="info-panel">
-                        <div class="title">行列式</div>
-                        <div id="matrix_detA"></div>
-                        <div class="message" id="matrix_detA_reversible"></div>
-                    </div>
-                    <div class="info-panel">
-                        <div class="title">逆行列</div>
-                        <div id="matrix_revA"></div>
-                    </div>
-                    <div class="info-panel">
-                        <div class="title">LU分解</div>
-                        <div id="matrix_L"></div>
-                        <div id="matrix_U"></div>
-                        <div id="matrix_LU"></div>
-                    </div>
-                </div>
-
-                <!-- Google Adsense広告（サイドバー（PC）） -->
-                <div class="google_ad">
-                    <ins class="adsbygoogle"
-                    style="display:inline-block;width:300px;height:600px"
-                    data-ad-client="ca-pub-6941251424797111"
-                    data-ad-slot="4920179380"></ins>
-                    <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                </div>
-            </div>
+        <!-- Google Adsense広告（Webサービス入力下部） -->
+        <div class="google_ad">
+          <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-6941251424797111"
+          data-ad-slot="8874373153"
+          data-ad-format="auto"></ins>
+          <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
         </div>
+
+        <!-- 結果表示 -->
+        <div id="result">
+          <div class="info-panel">
+            <div class="title">入力した行列</div>
+            <div id="matrix_A"></div>
+          </div>
+          <div id="panel-header">計算結果</div>
+          <div class="info-panel">
+            <div id="matrix_triA">
+              <div class="title">三角化</div>
+              <div class="status">途中経過(未完成)</div>
+              <div id="matrix_triA_result"></div>
+              <div id="matrix_triA_operation">
+                <div id="matrix_triA_operation_step">STEP 0</div>
+                <div id="matrix_triA_operation_content"></div>
+              </div>
+              <div id="matrix_triA_button_line">
+                <button id="triA-start"></button>
+                <button id="triA-prev"></button>
+                <span id="triA-progress">
+                  <span id="matrix_triA_step_header">STEP</span><br>
+                  <span id="matrix_triA_current_step"></span> / <span id="matrix_triA_total_step"></span></span>
+                <button id="triA-next"></button>
+                <button id="triA-end"></button>
+              </div>
+            </div>
+          </div>
+          <div class="info-panel">
+            <div class="title">階数</div>
+            <div id="matrix_rankA"></div>
+            <div class="message" id="matrix_rankA_reversible"></div>
+          </div>
+          <div class="info-panel">
+            <div class="title">行列式</div>
+            <div id="matrix_detA"></div>
+            <div class="message" id="matrix_detA_reversible"></div>
+          </div>
+          <div class="info-panel">
+            <div class="title">逆行列</div>
+            <div id="matrix_revA"></div>
+          </div>
+          <div class="info-panel">
+            <div class="title">LU分解</div>
+            <div id="matrix_L"></div>
+            <div id="matrix_U"></div>
+            <div id="matrix_LU"></div>
+          </div>
+        </div>
+
+        <!-- Google Adsense広告（サイドバー（PC）） -->
+        <div class="google_ad">
+          <ins class="adsbygoogle"
+          style="display:inline-block;width:300px;height:600px"
+          data-ad-client="ca-pub-6941251424797111"
+          data-ad-slot="4920179380"></ins>
+          <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </div>
     </div>
-    <div id="footer">
-        <div class="wrapper">Copyright 2018 Oguemon All right reserved.</div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="./out/script.js"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  </div>
+  <div id="footer">
+    <div class="wrapper">Copyright 2018 Oguemon All right reserved.</div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="./out/script.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 </body>
 </html>
