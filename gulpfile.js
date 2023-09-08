@@ -31,7 +31,8 @@ gulp.task("compile-js-dev", function () {
     .pipe(
       typescript({
         target: "ES6",
-        moduleResolution: "nodenext",
+        module: "NodeNext",
+        moduleResolution: "NodeNext",
         removeComments: true,
         outFile: "script.js",
       })
@@ -45,7 +46,8 @@ gulp.task("compile-js-release", function () {
     .pipe(
       typescript({
         target: "ES6",
-        moduleResolution: "nodenext",
+        module: "NodeNext",
+        moduleResolution: "NodeNext",
         removeComments: true,
       })
     )
