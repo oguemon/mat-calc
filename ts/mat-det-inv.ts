@@ -1,4 +1,6 @@
-/// <reference path="mat-calc.ts" />
+import { Mynum } from "./mynum";
+import * as Mat from "./mat-calc";
+
 let N: number = 3;
 
 interface LU {

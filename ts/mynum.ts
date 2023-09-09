@@ -1,4 +1,4 @@
-class Mynum {
+export class Mynum {
   private n: number = 0; // 分子
   private d: number = 0; // 分母
 
