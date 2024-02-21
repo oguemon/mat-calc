@@ -25,7 +25,7 @@ jobs:
         run: yarn build
 
       - name: Upload Output Files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.sha }}-current
           path: out
@@ -46,7 +46,7 @@ jobs:
         run: yarn build
 
       - name: Upload Output Files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.sha }}-main
           path: out
@@ -62,13 +62,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Output Files On Current Branch
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ github.sha }}-current
           path: out-current
 
       - name: Download Output Files On Main Branch
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ github.sha }}-main
           path: out-main
