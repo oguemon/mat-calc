@@ -16,7 +16,7 @@
     "@types/mathjax": "0.0.40",
     "jquery": "3.7.1",
     "mathjax": "3.2.2",
-    "sass": "1.77.5",
+    "sass": "1.77.8",
     "typescript": "5.4.5",
     "vite": "5.2.13"
   }
